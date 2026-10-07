@@ -41,121 +41,33 @@
         .btn-filtro.activo, .btn-filtro:hover { background-color: var(--primary); color: white; }
 
         /* ========================================== */
-        /* CARRUSEL DE MINI-PROMOS (ESTILO ROTATIVO)  */
+        /* CARRUSEL DE MINI-PROMOS                    */
         /* ========================================== */
-        .mini-promos-section {
-            max-width: 1100px;
-            margin: 20px auto 10px auto;
-            padding: 0 20px;
-        }
+        .mini-promos-section { max-width: 1100px; margin: 20px auto 10px auto; padding: 0 20px; }
+        .mini-promos-title { font-size: 1.1rem; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; justify-content: center; text-transform: uppercase; letter-spacing: 1px; }
+        .mini-carousel-container { position: relative; display: flex; align-items: center; padding: 20px 0; }
+        .mini-carousel-viewport { overflow: hidden; width: 100%; margin: 0 45px; padding: 15px 0; }
+        .mini-carousel-track { display: flex; gap: 15px; align-items: center; }
         
-        .mini-promos-title {
-            font-size: 1.1rem;
-            color: var(--primary);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            justify-content: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .mini-carousel-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            /* Padding arriba y abajo para que la tarjeta agrandada no se corte */
-            padding: 20px 0; 
-        }
-
-        .mini-carousel-viewport {
-            overflow: hidden;
-            width: 100%;
-            margin: 0 45px; /* Espacio para las flechas laterales */
-            padding: 15px 0; 
-        }
-
-        .mini-carousel-track {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-        }
-
         .mini-promo-card {
-            /* Muestra exactamente 3 tarjetas en PC restando los gaps */
             flex: 0 0 calc((100% - 30px) / 3); 
             background: linear-gradient(145deg, #ffffff, var(--promo-bg));
-            border: 1px solid #ffcccc;
-            border-radius: 12px;
-            padding: 15px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            cursor: pointer;
-            
-            /* Animación suave para deslizar, agrandar y aclarar */
-            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
-            
-            /* Estado base (las que están a los costados) */
-            opacity: 0.5;
-            transform: scale(0.92);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #ffcccc; border-radius: 12px; padding: 15px; display: flex; gap: 12px;
+            align-items: center; cursor: pointer; transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            opacity: 0.5; transform: scale(0.92); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         }
-
-        /* ESTADO ACTIVO (La tarjeta que queda justo en el centro) */
-        .mini-promo-card.center-card {
-            opacity: 1;
-            transform: scale(1.08); /* Se agranda un 8% */
-            box-shadow: 0 12px 25px rgba(255, 107, 107, 0.25);
-            border-color: var(--primary);
-            z-index: 2;
-        }
-
-        .mini-promo-img {
-            width: 80px;
-            height: 80px;
-            object-fit: contain;
-            border-radius: 8px;
-            background: #fff;
-            mix-blend-mode: multiply;
-        }
-
+        .mini-promo-card.center-card { opacity: 1; transform: scale(1.08); box-shadow: 0 12px 25px rgba(255, 107, 107, 0.25); border-color: var(--primary); z-index: 2; }
+        .mini-promo-img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; background: #fff; mix-blend-mode: multiply; }
         .mini-promo-info { flex: 1; text-align: left; }
-        .mini-promo-badge {
-            font-size: 0.65rem;
-            background: var(--primary);
-            color: white;
-            padding: 3px 6px;
-            border-radius: 4px;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-            margin-bottom: 4px;
-        }
+        .mini-promo-badge { font-size: 0.65rem; background: var(--primary); color: white; padding: 3px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 4px; }
         .mini-promo-title { font-size: 0.95rem; color: var(--dark); font-weight: 600; margin-bottom: 2px; line-height: 1.2; }
         .mini-promo-price { font-size: 1.1rem; color: var(--dark); font-weight: 700; }
-
-        .mini-carousel-btn {
-            position: absolute;
-            background: var(--dark);
-            color: white;
-            border: none;
-            width: 40px; height: 40px;
-            border-radius: 50%;
-            font-size: 1rem;
-            cursor: pointer;
-            z-index: 10;
-            transition: 0.3s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
+        .mini-carousel-btn { position: absolute; background: var(--dark); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer; z-index: 10; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .mini-carousel-btn:hover { background: var(--primary); transform: scale(1.1); }
         .mini-carousel-btn.prev { left: 0; }
         .mini-carousel-btn.next { right: 0; }
 
-        /* ========================================== */
-        /* MODAL PROMOCIONAL (DETALLE)                */
-        /* ========================================== */
+        /* MODAL PROMOCIONAL */
         .modal-promo-overlay { display: none; position: fixed; z-index: 990; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; padding: 20px; }
         .modal-promo-content { background: white; border-radius: 15px; width: 100%; max-width: 500px; padding: 30px; position: relative; animation: slideUp 0.3s ease; text-align: center; }
         .modal-promo-content img { max-width: 100%; height: 220px; object-fit: contain; cursor: pointer; margin-bottom: 15px; transition: 0.2s; }
@@ -262,18 +174,14 @@
         </div>
     </header>
 
-    <!-- SECCIÓN MINI-PROMOS (CARRUSEL INFINITO) -->
+    <!-- SECCIÓN MINI-PROMOS -->
     <section class="mini-promos-section" id="seccion-promos">
         <h3 class="mini-promos-title"><i class="fa-solid fa-fire"></i> Ofertas Especiales</h3>
         <div class="mini-carousel-container">
             <button class="mini-carousel-btn prev" onclick="moverMiniCarousel(-1)">&#10094;</button>
-            
             <div class="mini-carousel-viewport">
-                <div class="mini-carousel-track" id="miniPromosTrack">
-                    <!-- Se inyecta por JS -->
-                </div>
+                <div class="mini-carousel-track" id="miniPromosTrack"></div>
             </div>
-
             <button class="mini-carousel-btn next" onclick="moverMiniCarousel(1)">&#10095;</button>
         </div>
     </section>
@@ -286,14 +194,14 @@
         </div>
     </div>
 
-    <!-- Grilla de Catálogo Normal -->
+    <!-- Grilla de Catálogo -->
     <main class="catalogo-grid" id="grilla-productos"></main>
 
     <a href="https://wa.me/+5492634779824?text=Hola!%20Quería%20hacer%20una%20consulta%20del%20catálogo." class="whatsapp-float" target="_blank">
         <svg viewBox="0 0 32 32" width="35" height="35" fill="white"><path d="M16 2.67C8.64 2.67 2.67 8.64 2.67 16c0 2.34.61 4.54 1.68 6.47L2.67 29.33l7.03-1.68c1.88 1.02 4.02 1.68 6.3 1.68 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67zm7.66 19.26c-.32.88-1.58 1.64-2.22 1.74-.58.08-1.34.25-4.22-.95-3.48-1.45-5.75-5-5.93-5.24-.18-.24-1.41-1.89-1.41-3.6 0-1.72.9-2.56 1.22-2.92.32-.36.7-.45.93-.45h.68c.24 0 .56-.09.84.58.3.72 1 2.45 1.09 2.63.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.45-.53.59-.18.18-.38.37-.17.73.21.36.93 1.54 2 2.5 1.38 1.24 2.54 1.62 2.9 1.8.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.36.48-.3.81-.18.33.12 2.1.99 2.46 1.17.36.18.6.27.69.42.09.15.09.87-.23 1.75z"/></svg>
     </a>
 
-    <!-- Modal Zoom / Lightbox (Catálogo Normal) -->
+    <!-- Modal Zoom / Lightbox -->
     <div id="modalZoom" class="img-zoom-modal" onclick="cerrarZoom()">
         <span class="img-zoom-close">&times;</span>
         <div class="modal-content-wrapper" onclick="event.stopPropagation()">
@@ -310,49 +218,12 @@
         /* ========================================== */
         /* LÓGICA DEL CARRUSEL DE MINI-PROMOS         */
         /* ========================================== */
-        
-        // 5 Promos para que el carrusel gire de a 3
         const promos = [
-            {
-                badge: 'OFERTA DESTACADA',
-                titulo: 'Kit Defensa',
-                descripcion: 'Pistola CO2 Fox + 4 garrafas + 500 BBs',
-                precio: '$155.000',
-                imagen: 'foxp92.jpeg',
-                wspText: 'Hola! Me interesa la promo del Kit de Defensa Hogareña por $155.000'
-            },
-            {
-                badge: 'SALTO AL PCP',
-                titulo: 'Kit Fox Demon',
-                descripcion: 'Rifle PCP 5.5mm + Inflador + Balines',
-                precio: '$700.000',
-                imagen: 'demonoferta.jpeg',
-                wspText: 'Hola! Me interesa la promo del Kit PCP Fox Demon por $700.000'
-            },
-            {
-                badge: 'OFERTA POR TIEMPO LIMITADO',
-                titulo: 'Promo Fotos + Album',
-                descripcion: '40 Fotos tamaño 10x15 + Album. Tu historia en papel se ve mejor.',
-                precio: '$23.000',
-                imagen: 'promo40fotos.jpeg',
-                wspText: 'Hola! Quería consultar por la promo de 40 fotos 10x15 + Album.'
-            },
-            {
-                badge: 'PROMO GAMING',
-                titulo: 'Audio y Gaming',
-                descripcion: 'Llevando Auriculares y Joystick tenés descuento',
-                precio: 'Consultar',
-                imagen: 'jostik.jpeg',
-                wspText: 'Hola! Me interesa la promo del combo Auriculares y Joystick.'
-            },
-            {
-                badge: 'OUTDOOR',
-                titulo: 'Bersa BP9CC',
-                descripcion: 'Pistola ASG Bersa Metálica CO2 con corredera',
-                precio: '$350.000',
-                imagen: 'bersabp9ccoferta.jpeg',
-                wspText: 'Hola! Me interesa la promo de la Pistola Bersa BP9CC.'
-            }
+            { badge: 'OFERTA DESTACADA', titulo: 'Kit Defensa', descripcion: 'Pistola CO2 Fox + 4 garrafas + 500 BBs', precio: '$155.000', imagen: 'foxp92.jpeg', wspText: 'Hola! Me interesa la promo del Kit de Defensa Hogareña por $155.000' },
+            { badge: 'SALTO AL PCP', titulo: 'Kit Fox Demon', descripcion: 'Rifle PCP 5.5mm + Inflador + Balines', precio: '$700.000', imagen: 'demonoferta.jpeg', wspText: 'Hola! Me interesa la promo del Kit PCP Fox Demon por $700.000' },
+            { badge: 'PROMO FOTO', titulo: 'Promo Fotos + Album', descripcion: '40 Fotos tamaño 10x15 + Album. Tu historia en papel se ve mejor.', precio: '$23.000', imagen: 'promo40fotos.jpeg', wspText: 'Hola! Quería consultar por la promo de 40 fotos + album.' },
+            { badge: 'COMBO TECH', titulo: 'Audio y Gaming', descripcion: 'Llevando Auriculares y Joystick tenés descuento', precio: 'Consultar', imagen: 'auricularvincha.jpeg', wspText: 'Hola! Me interesa la promo del combo Auriculares y Joystick.' },
+            { badge: 'OUTDOOR', titulo: 'Bersa BP9CC', descripcion: 'Pistola ASG Bersa Metálica CO2 con corredera', precio: '$350.000', imagen: 'bersabp9ccoferta.jpeg', wspText: 'Hola! Me interesa la promo de la Pistola Bersa BP9CC.' }
         ];
 
         let isMiniAnimating = false;
@@ -362,15 +233,11 @@
             const track = document.getElementById('miniPromosTrack');
             if(!track) return;
             track.innerHTML = '';
-
-            // Renderizar promos
             promos.forEach((promo, i) => {
                 const card = document.createElement('div');
                 card.className = 'mini-promo-card';
                 card.onclick = () => abrirModalPromo(i);
-                
                 const imgPath = promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen;
-                
                 card.innerHTML = `
                     <img src="${imgPath}" alt="${promo.titulo}" class="mini-promo-img">
                     <div class="mini-promo-info">
@@ -381,14 +248,8 @@
                 `;
                 track.appendChild(card);
             });
-
-            // Establecer tarjeta central inicial (índice 1 en PC, índice 0 en celu)
             marcarCentro();
-
-            // Iniciar rotación
             iniciarMiniAuto();
-
-            // Eventos para pausar si el usuario quiere leer o tocar
             const container = document.querySelector('.mini-carousel-container');
             container.addEventListener('mouseenter', pausarMiniAuto);
             container.addEventListener('mouseleave', iniciarMiniAuto);
@@ -401,79 +262,54 @@
             if(isMiniAnimating) return;
             const track = document.getElementById('miniPromosTrack');
             const centerIdx = window.innerWidth > 768 ? 1 : 0;
-            
             Array.from(track.children).forEach((card, idx) => {
                 if(idx === centerIdx) card.classList.add('center-card');
                 else card.classList.remove('center-card');
             });
         }
 
-        // Animación giratoria infinita deslizando las tarjetas dentro del DOM
         function moverMiniCarousel(dir) {
             if (isMiniAnimating) return;
             const track = document.getElementById('miniPromosTrack');
             const cards = track.children;
             if (cards.length === 0) return;
-
             isMiniAnimating = true;
-            let itemWidth = cards[0].offsetWidth + 15; // +15px de gap
+            let itemWidth = cards[0].offsetWidth + 15;
             let centerIdx = window.innerWidth > 768 ? 1 : 0;
-
-            if (dir === 1) { // Mueve a la Izquierda (Avanzar)
-                // Se marca el que VA a ser el centro para que se vaya agrandando mientras se desliza
+            if (dir === 1) {
                 Array.from(cards).forEach(c => c.classList.remove('center-card'));
                 cards[centerIdx + 1].classList.add('center-card');
-
                 track.style.transition = 'transform 0.4s ease-in-out';
                 track.style.transform = `translateX(-${itemWidth}px)`;
-
                 setTimeout(() => {
                     track.style.transition = 'none';
-                    track.appendChild(track.firstElementChild); // Manda el primero al final
+                    track.appendChild(track.firstElementChild);
                     track.style.transform = 'translateX(0)';
                     isMiniAnimating = false;
                 }, 400);
-
-            } else { // Mueve a la Derecha (Retroceder)
+            } else {
                 track.style.transition = 'none';
-                track.prepend(track.lastElementChild); // Trae el último al principio
+                track.prepend(track.lastElementChild);
                 track.style.transform = `translateX(-${itemWidth}px)`;
-
-                // Forzar repintado del navegador
                 void track.offsetWidth; 
-
-                // Marcar el que será el nuevo centro
                 Array.from(cards).forEach(c => c.classList.remove('center-card'));
-                cards[centerIdx].classList.add('center-card'); // Como ya se movió en el DOM, el centro es el index actual
-
+                cards[centerIdx].classList.add('center-card');
                 track.style.transition = 'transform 0.4s ease-in-out';
                 track.style.transform = 'translateX(0)';
-
-                setTimeout(() => {
-                    isMiniAnimating = false;
-                }, 400);
+                setTimeout(() => { isMiniAnimating = false; }, 400);
             }
         }
 
-        function iniciarMiniAuto() {
-            pausarMiniAuto();
-            miniAutoTimer = setInterval(() => moverMiniCarousel(1), 4000); // Gira cada 4 segundos
-        }
-
-        function pausarMiniAuto() {
-            clearInterval(miniAutoTimer);
-        }
+        function iniciarMiniAuto() { pausarMiniAuto(); miniAutoTimer = setInterval(() => moverMiniCarousel(1), 4000); }
+        function pausarMiniAuto() { clearInterval(miniAutoTimer); }
 
         function abrirModalPromo(index) {
-            // Buscamos la promo por el título porque el index del DOM puede haber rotado
             const tituloClick = event.currentTarget.querySelector('.mini-promo-title').innerText;
             const promo = promos.find(p => p.titulo === tituloClick);
             if(!promo) return;
-
             const modal = document.getElementById('modalPromo');
             const details = document.getElementById('promoDetails');
             const imgPath = promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen;
-            
             details.innerHTML = `
                 <img src="${imgPath}" alt="${promo.titulo}" onclick="abrirZoomUnico('${imgPath}')">
                 <span class="hint-zoom">(Tocá la foto para ampliarla)</span>
@@ -486,11 +322,7 @@
             `;
             modal.style.display = 'flex';
         }
-
-        function cerrarModalPromo() {
-            document.getElementById('modalPromo').style.display = 'none';
-        }
-
+        function cerrarModalPromo() { document.getElementById('modalPromo').style.display = 'none'; }
         function abrirZoomUnico(src) {
             document.getElementById('imgZoomAmpliada').src = src;
             document.getElementById('btnPrevZoom').style.display = 'none';
@@ -498,12 +330,10 @@
             document.getElementById('modalZoom').style.display = 'flex';
         }
 
-
         /* ========================================== */
         /* LISTA DE PRODUCTOS NORMALES DEL CATÁLOGO   */
         /* ========================================== */
-        
-        const productos = [
+        const productosTotales = [
             { nombre: "Revelado Fotográfico Tamaño 10x15", categoria: "fotografia", precio: "Consultar", imagen: "9x13.jpeg" },
             { nombre: "Revelado Fotográfico Tamaño 10x15", categoria: "fotografia", precio: "Consultar", imagen: "10x15.jpeg" },
             { nombre: "Revelado Fotográfico Tamaño 13x18", categoria: "fotografia", precio: "Consultar", imagen: "13x18.jpeg" },
@@ -551,7 +381,7 @@
             { nombre: "Caña de Pescar Shimano FX 1,60M 2 Tramos", categoria: "outdoor", precio: "$XX.XXX", imagen: "shimanofx160.jpeg" },
             { nombre: "Caña de Pescar Spinit 1.98M RXs", categoria: "outdoor", precio: "$XX.XXX", imagen: "spinitRXs.jpeg" },
             { nombre: "Caña de Pescar Spinit RXs 2.10M", categoria: "outdoor", precio: "$XX.XXX", imagen: "spinitRXs2.jpeg" },
-            { nombre: "Caña de Pescar Spinit Model Horizon 2.1M", categoria: "outdoor", precio: "$XX.XXX", imagen: "spinithorizon.jpeg" },
+            { nombre: "Caña de Pescar Spinit Model Horizon 2.1M", outdoor: "outdoor", precio: "$XX.XXX", imagen: "spinithorizon.jpeg" },
             { nombre: "Fishing Point Rio de la Plata 2.40M", categoria: "outdoor", precio: "$XX.XXX", imagen: "fishing240.jpeg" },
             { nombre: "Fishing Point Rio de la Plata 2.10M", categoria: "outdoor", precio: "$XX.XXX", imagen: "fishing210.jpeg" },
             { nombre: "Spinit Riviera 2.40m 2 Tramos", categoria: "outdoor", precio: "$XX.XXX", imagen: "spinitriviera.jpeg" },
@@ -570,6 +400,7 @@
 
         function renderizar(lista) {
             grilla.innerHTML = "";
+            
             if (lista.length === 0) {
                 grilla.innerHTML = `<div class="sin-resultados"><i class="fa-solid fa-box-open" style="font-size: 2.5rem; margin-bottom: 10px;"></i><p>No encontramos ningún producto que coincida con tu búsqueda.</p></div>`;
                 return;
@@ -583,16 +414,21 @@
                 const card = document.createElement('div');
                 card.className = "producto-card";
 
+                // Le asignamos a la tarjeta un ID único 
+                const idUnico = 'img-prod-' + index;
+                // Guardamos el array de imágenes directamente adentro del HTML de la foto, así nunca importa si se filtró o no
+                const fotosData = encodeURIComponent(JSON.stringify(fotos));
+
                 let thumbsHTML = "";
                 if (fotos.length > 1) {
                     thumbsHTML = `<div class="thumbs-container">` +
-                        fotos.map((f, i) => `<img src="${RUTA_FOTOS + f}" class="thumb-img ${i === 0 ? 'activa' : ''}" onclick="seleccionarThumb(this, 'img-prod-${index}', '${RUTA_FOTOS + f}', ${index}, ${i})">`).join('') +
+                        fotos.map((f, i) => `<img src="${RUTA_FOTOS + f}" class="thumb-img ${i === 0 ? 'activa' : ''}" onclick="seleccionarThumb(this, '${idUnico}', '${RUTA_FOTOS + f}', ${i})">`).join('') +
                     `</div>`;
                 }
 
                 card.innerHTML = `
                     <div>
-                        <img id="img-prod-${index}" class="img-principal" src="${RUTA_FOTOS + fotoPrincipal}" alt="${prod.nombre}" onclick="abrirZoomProducto(${index})">
+                        <img id="${idUnico}" class="img-principal" src="${RUTA_FOTOS + fotoPrincipal}" alt="${prod.nombre}" data-fotos="${fotosData}" data-foto-index="0" onclick="abrirZoomProducto(this)">
                         ${thumbsHTML}
                         <div class="categoria-tag">${prod.categoria}</div>
                         <h3>${prod.nombre}</h3>
@@ -606,9 +442,12 @@
             });
         }
 
-        function seleccionarThumb(thumbElement, idImgPrincipal, nuevaRuta, indiceProd, indiceFoto) {
+        function seleccionarThumb(thumbElement, idImgPrincipal, nuevaRuta, indiceFoto) {
             const imgP = document.getElementById(idImgPrincipal);
-            if (imgP) { imgP.src = nuevaRuta; imgP.dataset.fotoIndex = indiceFoto; }
+            if (imgP) { 
+                imgP.src = nuevaRuta; 
+                imgP.dataset.fotoIndex = indiceFoto; 
+            }
             const parent = thumbElement.parentElement;
             parent.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('activa'));
             thumbElement.classList.add('activa');
@@ -632,7 +471,7 @@
                 seccionPromos.style.display = 'block';
             }
 
-            let filtrados = productos.filter(prod => {
+            let filtrados = productosTotales.filter(prod => {
                 const coincideCategoria = (categoriaActiva === 'todos' || prod.categoria === categoriaActiva);
                 const coincideTexto = prod.nombre.toLowerCase().includes(texto);
                 return coincideCategoria && coincideTexto;
@@ -664,16 +503,16 @@
         inputBuscador.addEventListener('input', aplicarFiltros);
         
         // ==========================================
-        // ZOOM GALERIA NORMAL
+        // ZOOM GALERIA NORMAL (100% CORREGIDO)
         // ==========================================
         let galeriaActual = [];
         let indiceFotoActual = 0;
 
-        function abrirZoomProducto(indiceProducto) {
-            const prod = productos[indiceProducto];
-            galeriaActual = obtenerListaFotos(prod);
-            const imgP = document.getElementById(`img-prod-${indiceProducto}`);
-            indiceFotoActual = imgP && imgP.dataset.fotoIndex ? parseInt(imgP.dataset.fotoIndex) : 0;
+        function abrirZoomProducto(imgElement) {
+            // Decodificamos el array de fotos directamente desde el HTML de la imagen que tocaste
+            galeriaActual = JSON.parse(decodeURIComponent(imgElement.getAttribute('data-fotos')));
+            indiceFotoActual = parseInt(imgElement.dataset.fotoIndex) || 0;
+            
             actualizarVistaModal();
             document.getElementById('modalZoom').style.display = 'flex';
         }
@@ -703,7 +542,7 @@
         // Inicializar Todo
         document.addEventListener('DOMContentLoaded', () => {
             initMiniPromos();
-            renderizar(productos);
+            renderizar(productosTotales);
         });
     </script>
 </body>
