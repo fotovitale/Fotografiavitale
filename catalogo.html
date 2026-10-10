@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo Completo | Fotografía Vitale</title>
+    <link rel="icon" type="image/jpeg" href="logochico3.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e32322; /* Rojo Kodak clásico, con mucha fuerza */
+            --dark: #1a1a1a;    /* Negro más profundo, como rollo fotográfico */
+            --light: #fff5d1;   /* Un amarillo/crema muy suave y nostálgico */
+            --whatsapp: #25d366;
+            --promo-bg: #fff0f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; overflow-x: hidden; }
+
+        /* HEADER Y NAVEGACIÓN */
+        .catalogo-header { background-color: white; padding: 12px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 90; }
+        .catalogo-nav { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 8px auto; }
+        .btn-volver { color: var(--dark); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; width: 140px; }
+        .btn-volver:hover { color: var(--primary); }
+        .logo-mini-nav { display: inline-flex; align-items: center; justify-content: flex-end; width: 140px; margin-right: -30px; }
+        .logo-mini-nav img { max-height: 65px; width: auto; border-radius: 6px; transition: 0.2s ease; }
+        .logo-mini-nav img:hover { transform: scale(1.05); }
+        .catalogo-header h1 { font-size: 1.35rem; color: var(--dark); }
+
+        /* CONTROLES: BUSCADOR Y FILTROS */
+        .filtros-container { max-width: 750px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+        .search-orden-row { display: flex; align-items: center; gap: 8px; width: 100%; }
+        .search-box { position: relative; flex: 1; }
+        .search-box input { width: 100%; padding: 8px 15px 8px 36px; border-radius: 25px; border: 1px solid #dfe6e9; font-size: 0.85rem; outline: none; transition: 0.3s; }
+        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 6px rgba(255, 107, 107, 0.2); }
+        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #b2bec3; font-size: 0.8rem; }
+        .orden-box select { background-color: white; border: 1px solid #dfe6e9; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--dark); outline: none; cursor: pointer; font-weight: 500; height: 100%; }
+        .categorias-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+        .btn-filtro { background-color: #f1f2f6; border: none; padding: 5px 12px; border-radius: 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--dark); transition: 0.2s; }
+        .btn-filtro.activo, .btn-filtro:hover { background-color: var(--primary); color: white; }
+
+        /* ========================================== */
+        /* CARRUSEL DE MINI-PROMOS                    */
+        /* ========================================== */
+        .mini-promos-section { max-width: 1100px; margin: 20px auto 10px auto; padding: 0 20px; }
+        .mini-promos-title { font-size: 1.1rem; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 8px; justify-content: center; text-transform: uppercase; letter-spacing: 1px; }
+        .mini-carousel-container { position: relative; display: flex; align-items: center; padding: 20px 0; }
+        .mini-carousel-viewport { overflow: hidden; width: 100%; margin: 0 45px; padding: 15px 0; }
+        .mini-carousel-track { display: flex; gap: 15px; align-items: center; }
+        
+        .mini-promo-card {
+            flex: 0 0 calc((100% - 30px) / 3); 
+            background: linear-gradient(145deg, #ffffff, var(--promo-bg));
+            border: 1px solid #ffcccc; border-radius: 12px; padding: 15px; display: flex; gap: 12px;
+            align-items: center; cursor: pointer; transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            opacity: 0.5; transform: scale(0.92); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+        .mini-promo-card.center-card { opacity: 1; transform: scale(1.08); box-shadow: 0 12px 25px rgba(255, 107, 107, 0.25); border-color: var(--primary); z-index: 2; }
+        .mini-promo-img { width: 80px; height: 80px; object-fit: contain; border-radius: 8px; background: #fff; mix-blend-mode: multiply; }
+        .mini-promo-info { flex: 1; text-align: left; }
+        .mini-promo-badge { font-size: 0.65rem; background: var(--primary); color: white; padding: 3px 6px; border-radius: 4px; font-weight: 700; text-transform: uppercase; display: inline-block; margin-bottom: 4px; }
+        .mini-promo-title { font-size: 0.95rem; color: var(--dark); font-weight: 600; margin-bottom: 2px; line-height: 1.2; }
+        .mini-promo-price { font-size: 1.1rem; color: var(--dark); font-weight: 700; }
+        .mini-carousel-btn { position: absolute; background: var(--dark); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1rem; cursor: pointer; z-index: 10; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .mini-carousel-btn:hover { background: var(--primary); transform: scale(1.1); }
+        .mini-carousel-btn.prev { left: 0; }
+        .mini-carousel-btn.next { right: 0; }
+
+        /* MODAL PROMOCIONAL */
+        .modal-promo-overlay { display: none; position: fixed; z-index: 990; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); justify-content: center; align-items: center; padding: 20px; }
+        .modal-promo-content { background: white; border-radius: 15px; width: 100%; max-width: 500px; padding: 30px; position: relative; animation: slideUp 0.3s ease; text-align: center; }
+        .modal-promo-content img { max-width: 100%; height: 220px; object-fit: contain; cursor: pointer; margin-bottom: 15px; transition: 0.2s; }
+        .modal-promo-content img:hover { transform: scale(1.03); }
+        .modal-promo-content h3 { font-size: 1.6rem; color: var(--dark); margin-bottom: 10px; }
+        .modal-promo-content p { color: #636e72; font-size: 1rem; margin-bottom: 15px; }
+        .modal-promo-content .precio-modal { font-size: 2rem; color: var(--primary); font-weight: 700; margin-bottom: 20px; }
+        .btn-cerrar-promo { position: absolute; top: 15px; right: 20px; background: none; border: none; font-size: 2.2rem; color: #b2bec3; cursor: pointer; transition: 0.2s; line-height: 1; }
+        .btn-cerrar-promo:hover { color: var(--primary); }
+        .hint-zoom { display:block; font-size: 0.8rem; color:#b2bec3; margin-top:-10px; margin-bottom: 15px; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* GRILLA DE PRODUCTOS NORMALES */
+        .catalogo-grid { max-width: 1100px; margin: 0 auto 15px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .producto-card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid #f1f2f6; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
+        .producto-card:hover { transform: translateY(-4px); }
+        .producto-card .img-principal { width: 100%; height: 180px; object-fit: contain; background-color: #fff; margin-bottom: 8px; cursor: pointer; border-radius: 6px; }
+        .thumbs-container { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; min-height: 38px; }
+        .thumb-img { width: 36px; height: 36px; object-fit: contain; background: #fff; border: 1px solid #dfe6e9; border-radius: 6px; cursor: pointer; transition: 0.2s; padding: 2px; }
+        .thumb-img:hover, .thumb-img.activa { border-color: var(--primary); box-shadow: 0 0 5px rgba(255, 107, 107, 0.4); transform: scale(1.05); }
+        .producto-card h3 { font-size: 1rem; margin-bottom: 5px; color: var(--dark); }
+        .producto-card .categoria-tag { font-size: 0.75rem; color: #b2bec3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .producto-card .precio { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; }
+        .btn-consultar { background: var(--dark); color: white; text-decoration: none; padding: 9px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-block; transition: 0.2s; }
+        .btn-consultar:hover { background-color: var(--primary); }
+        .sin-resultados { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #636e72; }
+
+        /* WHATSAPP Y ZOOM LIGHTBOX */
+        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background-color: var(--whatsapp); color: #FFF; border-radius: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); z-index: 100; text-decoration: none; transition: 0.3s; }
+        .whatsapp-float:hover { transform: scale(1.1); }
+        .img-zoom-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.88); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px; }
+        .modal-content-wrapper { position: relative; display: flex; align-items: center; justify-content: center; max-width: 90%; max-height: 85vh; }
+        .img-zoom-modal img { max-width: 100%; max-height: 85vh; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); animation: zoomAnim 0.25s ease-out; }
+        .img-zoom-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 2.2rem; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 1010; }
+        .img-zoom-close:hover { color: var(--primary); }
+        .btn-nav-zoom { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); color: white; border: none; font-size: 1.8rem; padding: 12px 16px; cursor: pointer; border-radius: 50%; transition: 0.2s; z-index: 1005; }
+        .btn-nav-zoom:hover { background: var(--primary); }
+        .btn-prev { left: -60px; }
+        .btn-next { right: -60px; }
+        @keyframes zoomAnim { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* AJUSTES CELULARES */
+        @media (max-width: 768px) {
+            .catalogo-header { padding: 8px 10px !important; }
+            .btn-volver { width: auto !important; font-size: 0.75rem !important; }
+            .logo-mini-nav img { max-height: 58px; border-radius: 8px; border: 1px solid #e1e5ee; box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
+            
+            .mini-promos-section { padding: 0 10px; margin-top: 5px; }
+            .mini-carousel-viewport { margin: 0 30px; padding: 5px 0; }
+            
+            /* En celular se muestra 1 sola tarjeta a la vez */
+            .mini-promo-card { flex: 0 0 100%; padding: 10px; opacity: 1; transform: scale(1); }
+            .mini-promo-card.center-card { transform: scale(1); border-color: var(--primary); opacity: 1; }
+            
+            .mini-promo-img { width: 65px; height: 65px; }
+            .mini-carousel-btn { width: 30px; height: 30px; font-size: 0.8rem; }
+
+            .catalogo-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; padding: 0 10px !important; }
+            .producto-card { padding: 10px !important; }
+            .producto-card .img-principal { height: 120px !important; margin-bottom: 6px !important; }
+            .thumb-img { width: 28px !important; height: 28px !important; }
+            .producto-card h3 { font-size: 0.9rem !important; }
+            .producto-card .precio { font-size: 1rem !important; }
+            .btn-consultar { font-size: 0.8rem !important; padding: 6px 10px !important; width: 100% !important; }
+            .whatsapp-float { width: 50px !important; height: 50px !important; bottom: 20px !important; right: 20px !important; }
+            .whatsapp-float svg { width: 28px !important; height: 28px !important; }
+            .btn-prev { left: 5px !important; }
+            .btn-next { right: 5px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="catalogo-header">
+        <div class="catalogo-nav">
+            <a href="index.html" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
+            <h1>Catálogo General</h1>
+            <a href="index.html" class="logo-mini-nav">
+                <img src="logochico3.png" alt="Fotografía Vitale">
+            </a>
+        </div>
+        <div class="filtros-container">
+            <div class="search-orden-row">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="buscador" placeholder="Buscar por nombre, modelo o tipo...">
+                </div>
+                <div class="orden-box">
+                    <select id="select-orden" onchange="aplicarFiltros()">
+                        <option value="predeterminado">Ordenar</option>
+                        <option value="nombre-asc">Nombre: A - Z</option>
+                        <option value="nombre-desc">Nombre: Z - A</option>
+                        <option value="precio-menor">Precio: Menor a Mayor</option>
+                        <option value="precio-mayor">Precio: Mayor a Menor</option>
+                    </select>
+                </div>
+            </div>
+            <div class="categorias-bar">
+                <button class="btn-filtro activo" onclick="filtrarCategoria('todos', this)">Todos</button>
+                <button class="btn-filtro" onclick="filtrarCategoria('fotografia', this)">Fotografía</button>
+                <button class="btn-filtro" onclick="filtrarCategoria('tecnologia', this)">Tecnología y Computación</button>
+                <button class="btn-filtro" onclick="filtrarCategoria('outdoor', this)">Camping, Caza y Pesca</button>
+                <button class="btn-filtro" onclick="filtrarCategoria('varios', this)">Accesorios y Varios</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- SECCIÓN MINI-PROMOS -->
+    <section class="mini-promos-section" id="seccion-promos">
+        <h3 class="mini-promos-title"><i class="fa-solid fa-fire"></i> Ofertas Especiales</h3>
+        <div class="mini-carousel-container">
+            <button class="mini-carousel-btn prev" onclick="moverMiniCarousel(-1)">&#10094;</button>
+            <div class="mini-carousel-viewport">
+                <div class="mini-carousel-track" id="miniPromosTrack"></div>
+            </div>
+            <button class="mini-carousel-btn next" onclick="moverMiniCarousel(1)">&#10095;</button>
+        </div>
+    </section>
+
+    <!-- Modal Detalle Promo -->
+    <div id="modalPromo" class="modal-promo-overlay" onclick="cerrarModalPromo()">
+        <div class="modal-promo-content" onclick="event.stopPropagation()">
+            <button class="btn-cerrar-promo" onclick="cerrarModalPromo()">&times;</button>
+            <div id="promoDetails"></div>
+        </div>
+    </div>
+
+    <!-- Grilla de Catálogo -->
+    <main class="catalogo-grid" id="grilla-productos"></main>
+
+    <a href="https://wa.me/+5492634779824?text=Hola!%20Quería%20hacer%20una%20consulta%20del%20catálogo." class="whatsapp-float" target="_blank">
+        <svg viewBox="0 0 32 32" width="35" height="35" fill="white"><path d="M16 2.67C8.64 2.67 2.67 8.64 2.67 16c0 2.34.61 4.54 1.68 6.47L2.67 29.33l7.03-1.68c1.88 1.02 4.02 1.68 6.3 1.68 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67zm7.66 19.26c-.32.88-1.58 1.64-2.22 1.74-.58.08-1.34.25-4.22-.95-3.48-1.45-5.75-5-5.93-5.24-.18-.24-1.41-1.89-1.41-3.6 0-1.72.9-2.56 1.22-2.92.32-.36.7-.45.93-.45h.68c.24 0 .56-.09.84.58.3.72 1 2.45 1.09 2.63.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.45-.53.59-.18.18-.38.37-.17.73.21.36.93 1.54 2 2.5 1.38 1.24 2.54 1.62 2.9 1.8.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.36.48-.3.81-.18.33.12 2.1.99 2.46 1.17.36.18.6.27.69.42.09.15.09.87-.23 1.75z"/></svg>
+    </a>
+
+    <!-- Modal Zoom / Lightbox -->
+    <div id="modalZoom" class="img-zoom-modal" onclick="cerrarZoom()">
+        <span class="img-zoom-close">&times;</span>
+        <div class="modal-content-wrapper" onclick="event.stopPropagation()">
+            <button id="btnPrevZoom" class="btn-nav-zoom btn-prev" onclick="cambiarFotoModal(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+            <img id="imgZoomAmpliada" src="" alt="Zoom Producto">
+            <button id="btnNextZoom" class="btn-nav-zoom btn-next" onclick="cambiarFotoModal(1)"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+    </div>
+
+    <script>
+        const RUTA_FOTOS = "productos/";
+        const NUMERO_WSP = "+5492634779824";
+
+        /* ========================================== */
+        /* LÓGICA DEL CARRUSEL DE MINI-PROMOS         */
+        /* ========================================== */
+        const promos = [
+            { badge: 'OFERTA DESTACADA', titulo: 'Kit Defensa', descripcion: 'Pistola CO2 Fox + 4 garrafas + 500 BBs', precio: '$155.000', imagen: 'foxp92.jpeg', wspText: 'Hola! Me interesa la promo del Kit de Defensa Hogareña por $155.000' },
+            { badge: 'SALTO AL PCP', titulo: 'Kit Fox Demon', descripcion: 'Rifle PCP 5.5mm + Inflador + Balines', precio: '$700.000', imagen: 'demonoferta.jpeg', wspText: 'Hola! Me interesa la promo del Kit PCP Fox Demon por $700.000' },
+            { badge: 'PROMO FOTO', titulo: 'Promo Fotos + Album', descripcion: '40 Fotos tamaño 10x15 + Album. Tu historia en papel se ve mejor.', precio: '$23.000', imagen: 'promo40fotos.jpeg', wspText: 'Hola! Quería consultar por la promo de 40 fotos + album.' },
+            { badge: 'COMBO TECH', titulo: 'Audio y Gaming', descripcion: 'Llevando Auriculares y Joystick tenés descuento', precio: 'Consultar', imagen: 'auricularvincha.jpeg', wspText: 'Hola! Me interesa la promo del combo Auriculares y Joystick.' },
+            { badge: 'OUTDOOR', titulo: 'Bersa BP9CC', descripcion: 'Pistola ASG Bersa Metálica CO2 con corredera', precio: '$350.000', imagen: 'bersabp9ccoferta.jpeg', wspText: 'Hola! Me interesa la promo de la Pistola Bersa BP9CC.' }
+        ];
+
+        let isMiniAnimating = false;
+        let miniAutoTimer;
+
+        function initMiniPromos() {
+            const track = document.getElementById('miniPromosTrack');
+            if(!track) return;
+            track.innerHTML = '';
+            promos.forEach((promo, i) => {
+                const card = document.createElement('div');
+                card.className = 'mini-promo-card';
+                card.onclick = () => abrirModalPromo(i);
+                const imgPath = promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen;
+                card.innerHTML = `
+                    <img src="${imgPath}" alt="${promo.titulo}" class="mini-promo-img">
+                    <div class="mini-promo-info">
+                        <span class="mini-promo-badge">${promo.badge}</span>
+                        <h4 class="mini-promo-title">${promo.titulo}</h4>
+                        <div class="mini-promo-price">${promo.precio}</div>
+                    </div>
+                `;
+                track.appendChild(card);
+            });
+            marcarCentro();
+            iniciarMiniAuto();
+            const container = document.querySelector('.mini-carousel-container');
+            container.addEventListener('mouseenter', pausarMiniAuto);
+            container.addEventListener('mouseleave', iniciarMiniAuto);
+            container.addEventListener('touchstart', pausarMiniAuto);
+            container.addEventListener('touchend', iniciarMiniAuto);
+            window.addEventListener('resize', marcarCentro);
+        }
+
+        function marcarCentro() {
+            if(isMiniAnimating) return;
+            const track = document.getElementById('miniPromosTrack');
+            const centerIdx = window.innerWidth > 768 ? 1 : 0;
+            Array.from(track.children).forEach((card, idx) => {
+                if(idx === centerIdx) card.classList.add('center-card');
+                else card.classList.remove('center-card');
+            });
+        }
+
+        function moverMiniCarousel(dir) {
+            if (isMiniAnimating) return;
+            const track = document.getElementById('miniPromosTrack');
+            const cards = track.children;
+            if (cards.length === 0) return;
+            isMiniAnimating = true;
+            let itemWidth = cards[0].offsetWidth + 15;
+            let centerIdx = window.innerWidth > 768 ? 1 : 0;
+            if (dir === 1) {
+                Array.from(cards).forEach(c => c.classList.remove('center-card'));
+                cards[centerIdx + 1].classList.add('center-card');
+                track.style.transition = 'transform 0.4s ease-in-out';
+                track.style.transform = `translateX(-${itemWidth}px)`;
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    track.appendChild(track.firstElementChild);
+                    track.style.transform = 'translateX(0)';
+                    isMiniAnimating = false;
+                }, 400);
+            } else {
+                track.style.transition = 'none';
+                track.prepend(track.lastElementChild);
+                track.style.transform = `translateX(-${itemWidth}px)`;
+                void track.offsetWidth; 
+                Array.from(cards).forEach(c => c.classList.remove('center-card'));
+                cards[centerIdx].classList.add('center-card');
+                track.style.transition = 'transform 0.4s ease-in-out';
+                track.style.transform = 'translateX(0)';
+                setTimeout(() => { isMiniAnimating = false; }, 400);
+            }
+        }
+
+        function iniciarMiniAuto() { pausarMiniAuto(); miniAutoTimer = setInterval(() => moverMiniCarousel(1), 4000); }
+        function pausarMiniAuto() { clearInterval(miniAutoTimer); }
+
+        function abrirModalPromo(index) {
+            const tituloClick = event.currentTarget.querySelector('.mini-promo-title').innerText;
+            const promo = promos.find(p => p.titulo === tituloClick);
+            if(!promo) return;
+            const modal = document.getElementById('modalPromo');
+            const details = document.getElementById('promoDetails');
+            const imgPath = promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen;
+            details.innerHTML = `
+                <img src="${imgPath}" alt="${promo.titulo}" onclick="abrirZoomUnico('${imgPath}')">
+                <span class="hint-zoom">(Tocá la foto para ampliarla)</span>
+                <h3>${promo.titulo}</h3>
+                <p>${promo.descripcion}</p>
+                <div class="precio-modal">${promo.precio}</div>
+                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" class="btn-consultar" style="width: 100%; text-align: center; font-size: 1.1rem; padding: 12px; background: var(--whatsapp);">
+                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo
+                </a>
+            `;
+            modal.style.display = 'flex';
+        }
+        function cerrarModalPromo() { document.getElementById('modalPromo').style.display = 'none'; }
+        function abrirZoomUnico(src) {
+            document.getElementById('imgZoomAmpliada').src = src;
+            document.getElementById('btnPrevZoom').style.display = 'none';
+            document.getElementById('btnNextZoom').style.display = 'none';
+            document.getElementById('modalZoom').style.display = 'flex';
+        }
+
+        /* ========================================== */
+        /* LISTA DE PRODUCTOS NORMALES DEL CATÁLOGO   */
+        /* ========================================== */
+        const productosTotales = [
+            { 
+                nombre: "Revelado Fotográfico Tamaño 10x15", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "9x13.jpeg" 
+            },
+            { 
+                nombre: "Revelado Fotográfico Tamaño 10x15", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "10x15.jpeg" 
+            },
+            { 
+                nombre: "Revelado Fotográfico Tamaño 13x18", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "13x18.jpeg" 
+            },
+            { 
+                nombre: "Revelado Fotográfico Tamaño 15x21", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "15x21.jpeg" 
+            },  
+            { 
+                nombre: "Revelado Fotográfico Tamaño 20x30", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "20x30.jpeg" 
+            },
+            { 
+                nombre: "Revelado Fotográfico Tamaño 30x40", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "30x40.jpeg" 
+            },
+            { 
+                nombre: "Impresión de Banners y Gigantografias en Lona", 
+                categoria: "fotografia", 
+                precio: "Consultar tamaños y precios", 
+                imagen: "Lona.jpeg" 
+            },
+            { 
+                nombre: "Cuadros (Consultar variedad de tamaños y modelos)", 
+                categoria: "fotografia", 
+                precio: "Consultar", 
+                imagen: "cuadros.jpeg" 
+            },
+            { 
+                nombre: "Joystick Inalámbrico PS4", 
+                categoria: "tecnologia", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagen: "jostik.jpeg" 
+            },
+            { 
+                nombre: "Auriculares Vincha Bluetooth", 
+                categoria: "tecnologia", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagen: "auricularvincha.jpeg" 
+            },
+            { 
+                nombre: "Auriculares Vincha Bluetooth Lovely", 
+                categoria: "tecnologia", 
+                precio: "Consultar precio", 
+                imagen: "auriculareslovely.jpeg" 
+            },
+            { 
+                nombre: "Soporte doble ventosa para celular", 
+                categoria: "tecnologia", 
+                precio: "Consultar precio", 
+                imagen: "soportedobleventosa.jpeg" 
+            },
+            { 
+                nombre: "Oso de peluche con Parlante bloutooth integrado", 
+                categoria: "tecnologia", 
+                precio: "Consultar precio", 
+                imagenes: ["osopelucheparlante.jpeg", "osopelucheparlante2.jpeg"] 
+            },
+            { 
+                nombre: "Cargador Carga Rápida USB-C", 
+                categoria: "tecnologia", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagen: "cargador.jpeg" 
+            },
+            { 
+                nombre: "Cargador Carga Rápida Micro USB", 
+                categoria: "tecnologia", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagen: "cargadormicro.jpeg" 
+            },
+            { 
+                nombre: "Cargador Carga Rápida Lightning/Iphone", 
+                categoria: "tecnologia", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagen: "cargadorlight.jpeg" 
+            },
+            { 
+                nombre: "Laser Pointer Verde", 
+                categoria: "tecnologia", 
+                precio: "$18.000", 
+                imagen: "laser.jpeg" 
+            },
+            { 
+                nombre: "Rifle Fox PCP M25 6,35mm con Inflador", 
+                categoria: "outdoor", 
+                precio: "860.000", 
+                imagenes: ["m25oferta.jpeg", "m25.jpeg"] 
+            },
+            { 
+                nombre: "Rifle Fox PCP Demond Madera 5,5mm con Inflador", 
+                categoria: "outdoor", 
+                precio: "OFERTA", 
+                imagenes: ["demonoferta.jpeg", "pr900.jpeg"] 
+            },
+            { 
+                nombre: "Rifle Fox Nitro Piston GR1600 6,35mm", 
+                categoria: "outdoor", 
+                precio: "$380.000", 
+                imagenes: ["gr1600oferta.jpeg", "gr1600.jpeg"] 
+            },
+            { 
+                nombre: "Rifle Fox Nitro Piston Combat con Cargador 5,5mm", 
+                categoria: "outdoor", 
+                precio: "Consultar stock y precio", 
+                imagen: "combat.jpeg" 
+            },
+            { 
+                nombre: "Rifle Fox Nitro Piston Bravo 5,5mm", 
+                categoria: "outdoor", 
+                precio: "Consultar stock y precio", 
+                imagen: "bravo.jpeg" 
+            },
+            { 
+                nombre: "Pistola Disuasiva Umarex GEN2 Calibre .50", 
+                categoria: "outdoor", 
+                precio: "$299.000", 
+                imagenes: ["disuasivaoferta.jpeg", "disuasiva.jpeg"] 
+            },
+            { 
+                nombre: "Pistola ASG Bersa BP9CC Metalica con corredera Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "Consultar stock", 
+                imagenes: ["bersabp9ccoferta.jpeg", "bersabp9cc.jpeg"] 
+            },
+            { 
+                nombre: "Pistola Fox P92X Metalica con corredera Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "Consultar", 
+                imagen: "foxp92x.jpeg" 
+            },
+            { 
+                nombre: "Pistola Fox P92 Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "$125.000", 
+                imagen: "foxp92.jpeg" 
+            },
+            { 
+                nombre: "Pistola Fox 1911 Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "$125.000", 
+                imagen: "fox1911.jpeg" 
+            },
+            { 
+                nombre: "Pistola Fox P226 Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "$125.000", 
+                imagen: "foxp226.jpeg" 
+            },
+            { 
+                nombre: "Pistola Krico G17 Co2 4,5mm", 
+                categoria: "outdoor", 
+                precio: "$125.000", 
+                imagenes: ["kricokg17oferta.jpeg", "kricokg17.jpeg"] 
+            },
+            { 
+                nombre: "Pistola Fox Mamba de Quiebre resortera 4,5mm", 
+                categoria: "outdoor", 
+                precio: "$120.000", 
+                imagenes: ["mambaoferta.jpeg", "mamba.jpeg"] 
+            },
+            { 
+                nombre: "Inflador para PCP 300bar", 
+                categoria: "outdoor", 
+                precio: "$190.000", 
+                imagen: "inflador.jpeg" 
+            },
+            { 
+                nombre: "Mira Fox 4x32", 
+                categoria: "outdoor", 
+                precio: "$85.000", 
+                imagen: "4x32.jpeg" 
+            },
+            { 
+                nombre: "Mira 4x20", 
+                categoria: "outdoor", 
+                precio: "$30.000", 
+                imagen: "4x20.jpeg" 
+            },
+            { 
+                nombre: "Mira Fox 3-9x40", 
+                categoria: "outdoor", 
+                precio: "$30.000", 
+                imagen: "39x40.jpeg" 
+            },
+            { 
+                nombre: "Linternas", 
+                categoria: "outdoor,tecnologia", 
+                precio: "Consultar por variedad de modelos y precios", 
+                imagen: "linternas.jpeg" 
+            },
+            { 
+                nombre: "Pistolera de Nylon", 
+                categoria: "outdoor", 
+                precio: "$18.000", 
+                imagen: "pistolera.jpeg" 
+            },
+            { 
+                nombre: "Gas Pimienta Sabre 22gr", 
+                categoria: "outdoor", 
+                precio: "$25.000",
+                imagen: "gaspimientasabre.jpeg" 
+            },
+            { 
+                nombre: "Gas Pimienta NATO American Style 60ml", 
+                categoria: "outdoor", 
+                precio: "$13.000",
+                imagen: "gaspimientaverde.jpeg" 
+            },
+            { 
+                nombre: "Gas Pimienta American Style 60ml", 
+                categoria: "outdoor", 
+                precio: "$13.000",
+                imagen: "gaspimientanegro.jpeg" 
+            },
+            { 
+                nombre: "Gas Pimienta Body Protect 20ml", 
+                categoria: "outdoor", 
+                precio: "$10.000",
+                imagen: "gaspimientabody.jpeg" 
+            },
+            { 
+                nombre: "Linterna/Picana Electrica", 
+                categoria: "outdoor", 
+                precio: "$19.000",
+                imagen: "picanalinterna.jpeg" 
+            },
+            { 
+                nombre: "Picana electrica Manopla", 
+                categoria: "outdoor", 
+                precio: "$25.000",
+                imagen: "picanamanopla.jpeg" 
+            },
+            { 
+                nombre: "Picana electricaAnillo", 
+                categoria: "outdoor", 
+                precio: "$20.000",
+                imagen: "picanaanillo.jpeg" 
+            },
+            { 
+                nombre: "Picana electrica USB chargue", 
+                categoria: "outdoor", 
+                precio: "$29.000",
+                imagenes: ["picanausb.jpeg", "picanausb2.jpeg"] 
+            },
+            { 
+                nombre: "Picana electrica llave de auto", 
+                categoria: "outdoor", 
+                precio: "$30.000",
+                imagen: "picanallave.jpeg" 
+            },
+             { 
+                nombre: "Encendedores de Bencina", 
+                categoria: "outdoor, varios", 
+                precio: "$7.000-$12.000",
+                imagenes: ["encendedorbencina1.jpeg", "encendedorbencina2.jpeg", "encendedorbencina3.jpeg", "encendedorbencina4.jpeg", "encendedorbencina5.jpeg"] 
+            },
+            { 
+                nombre: "Bencina", 
+                categoria: "outdoor, varios", 
+                precio: "Consultar precio",
+                imagen: "bencina.jpeg" 
+            },
+            { 
+                nombre: "Cinta elastica de camuflaje para Rifles,arcos,etc", 
+                categoria: "outdoor", 
+                precio: "$6.000 c/u", 
+                imagenes: ["cintadecamuflaje1.jpeg", "cintadecamuflaje2.jpeg", "cintadecamuflaje3.jpeg"] 
+            },
+            { 
+                nombre: "Correas Tacticas de seguridad para rifles y pistolas", 
+                categoria: "outdoor", 
+                precio: "Consultar variedad de modelos y precios", 
+                imagenes: ["portacorrea1.jpeg", "portacorrea2.jpeg", "portacorrea3.jpeg"]
+            },
+            { 
+                nombre: "Pistolera Interna de tela y cuero", 
+                categoria: "outdoor", 
+                precio: "$20.000", 
+                imagen: "pistolerainterna.jpeg" 
+            },
+            { 
+                nombre: "Balines Fox/Apolo 5,5/6,35/9mm", 
+                categoria: "outdoor", 
+                precio: "Consultar precio y variedad", 
+                imagen: "balines.jpeg" 
+            },
+            { 
+                nombre: "Balines bbs para pistolas 4,5mm 500/1500/2500 unidades", 
+                categoria: "outdoor", 
+                precio: "Consultar precio", 
+                imagen: "bpistolas.jpeg" 
+            },  
+            { 
+                nombre: "Postas/Balines de Goma calibre .50", 
+                categoria: "outdoor", 
+                precio: "Consultar precio", 
+                imagen: "postas de goma.jpeg" 
+            },
+            { 
+                nombre: "Balines de airsoft 6mm plasticos", 
+                categoria: "outdoor", 
+                precio: "Consultar precio", 
+                imagen: "bbsplastico.jpeg" 
+            },
+            { 
+                nombre: "Cuchillo Táctico de Supervivencia", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "cuchi.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Spinit Telescopica Sunset 1800 1.8M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "telescopica1800spinit.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Spinit Telescopica Lagoon 1.9M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "telescopica1900spinit.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Shimano FX 1,60M 2 Tramos", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "shimanofx160.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Spinit 1.98M RXs", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "spinitRXs.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Spinit RXs 2.10M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "spinitRXs2.jpeg" 
+            },
+            { 
+                nombre: "Caña de Pescar Spinit Model Horizon 2.1M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "spinithorizon.jpeg" 
+            },
+            { 
+                nombre: "Fishing Point Rio de la Plata 2.40M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "fishing240.jpeg" 
+            },
+            { 
+                nombre: "Fishing Point Rio de la Plata 2.10M", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "fishing210.jpeg" 
+            },
+            { 
+                nombre: "Spinit Riviera 2.40m 2 Tramos", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "spinitriviera.jpeg" 
+            },
+            { 
+                nombre: "Spinit SX 2.40M 2 Tramos", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "spinitsx.jpeg" 
+            },
+            { 
+                nombre: "Dawahujing 240M 2 Tramos", 
+                categoria: "outdoor", 
+                precio: "$XX.XXX", 
+                imagen: "dawa240.jpeg" 
+            }
+        ];
+
+        let categoriaActiva = 'todos';
+        const grilla = document.getElementById('grilla-productos');
+        const inputBuscador = document.getElementById('buscador');
+
+        function obtenerListaFotos(prod) {
+            if (prod.imagenes && Array.isArray(prod.imagenes) && prod.imagenes.length > 0) return prod.imagenes;
+            return prod.imagen ? [prod.imagen] : [];
+        }
+
+        function renderizar(lista) {
+            grilla.innerHTML = "";
+            
+            if (lista.length === 0) {
+                grilla.innerHTML = `<div class="sin-resultados"><i class="fa-solid fa-box-open" style="font-size: 2.5rem; margin-bottom: 10px;"></i><p>No encontramos ningún producto que coincida con tu búsqueda.</p></div>`;
+                return;
+            }
+
+            lista.forEach((prod, index) => {
+                const fotos = obtenerListaFotos(prod);
+                const fotoPrincipal = fotos[0] || "";
+                const mensajeWsp = encodeURIComponent(`Hola! Quería consultar por disponibilidad y precio de: ${prod.nombre}`);
+                
+                const card = document.createElement('div');
+                card.className = "producto-card";
+
+                // Le asignamos a la tarjeta un ID único 
+                const idUnico = 'img-prod-' + index;
+                // Guardamos el array de imágenes directamente adentro del HTML de la foto, así nunca importa si se filtró o no
+                const fotosData = encodeURIComponent(JSON.stringify(fotos));
+
+                let thumbsHTML = "";
+                if (fotos.length > 1) {
+                    thumbsHTML = `<div class="thumbs-container">` +
+                        fotos.map((f, i) => `<img src="${RUTA_FOTOS + f}" class="thumb-img ${i === 0 ? 'activa' : ''}" onclick="seleccionarThumb(this, '${idUnico}', '${RUTA_FOTOS + f}', ${i})">`).join('') +
+                    `</div>`;
+                }
+
+                card.innerHTML = `
+                    <div>
+                        <img id="${idUnico}" class="img-principal" src="${RUTA_FOTOS + fotoPrincipal}" alt="${prod.nombre}" data-fotos="${fotosData}" data-foto-index="0" onclick="abrirZoomProducto(this)">
+                        ${thumbsHTML}
+                        <div class="categoria-tag">${prod.categoria}</div>
+                        <h3>${prod.nombre}</h3>
+                    </div>
+                    <div>
+                        <div class="precio">${prod.precio}</div>
+                        <a href="https://wa.me/${NUMERO_WSP}?text=${mensajeWsp}" target="_blank" class="btn-consultar">Consultar</a>
+                    </div>
+                `;
+                grilla.appendChild(card);
+            });
+        }
+
+        function seleccionarThumb(thumbElement, idImgPrincipal, nuevaRuta, indiceFoto) {
+            const imgP = document.getElementById(idImgPrincipal);
+            if (imgP) { 
+                imgP.src = nuevaRuta; 
+                imgP.dataset.fotoIndex = indiceFoto; 
+            }
+            const parent = thumbElement.parentElement;
+            parent.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('activa'));
+            thumbElement.classList.add('activa');
+        }
+
+        function extraerNumeroPrecio(precioStr) {
+            if (!precioStr || precioStr.toLowerCase().includes("consultar") || precioStr.includes("XX")) return null;
+            const numero = parseFloat(precioStr.replace(/[^0-9]/g, ''));
+            return isNaN(numero) ? null : numero;
+        }
+
+        function aplicarFiltros() {
+            const texto = inputBuscador.value.toLowerCase().trim();
+            const selectOrden = document.getElementById('select-orden');
+            const criterioOrden = selectOrden ? selectOrden.value : 'predeterminado';
+
+            const seccionPromos = document.getElementById('seccion-promos');
+            if(texto !== "" || categoriaActiva !== "todos") {
+                seccionPromos.style.display = 'none';
+            } else {
+                seccionPromos.style.display = 'block';
+            }
+
+            let filtrados = productosTotales.filter(prod => {
+                const coincideCategoria = (categoriaActiva === 'todos' || prod.categoria.includes(categoriaActiva));
+                const coincideTexto = prod.nombre.toLowerCase().includes(texto);
+                return coincideCategoria && coincideTexto;
+            });
+
+            if (criterioOrden === 'nombre-asc') filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            else if (criterioOrden === 'nombre-desc') filtrados.sort((a, b) => b.nombre.localeCompare(a.nombre));
+            else if (criterioOrden === 'precio-menor') {
+                filtrados.sort((a, b) => {
+                    const pA = extraerNumeroPrecio(a.precio), pB = extraerNumeroPrecio(b.precio);
+                    if (pA === null) return 1; if (pB === null) return -1; return pA - pB;
+                });
+            } else if (criterioOrden === 'precio-mayor') {
+                filtrados.sort((a, b) => {
+                    const pA = extraerNumeroPrecio(a.precio), pB = extraerNumeroPrecio(b.precio);
+                    if (pA === null) return 1; if (pB === null) return -1; return pB - pA;
+                });
+            }
+            renderizar(filtrados);
+        }
+
+        function filtrarCategoria(cat, boton) {
+            categoriaActiva = cat;
+            document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('activo'));
+            boton.classList.add('activo');
+            aplicarFiltros();
+        }
+
+        inputBuscador.addEventListener('input', aplicarFiltros);
+        
+        // ==========================================
+        // ZOOM GALERIA NORMAL (100% CORREGIDO)
+        // ==========================================
+        let galeriaActual = [];
+        let indiceFotoActual = 0;
+
+        function abrirZoomProducto(imgElement) {
+            // Decodificamos el array de fotos directamente desde el HTML de la imagen que tocaste
+            galeriaActual = JSON.parse(decodeURIComponent(imgElement.getAttribute('data-fotos')));
+            indiceFotoActual = parseInt(imgElement.dataset.fotoIndex) || 0;
+            
+            actualizarVistaModal();
+            document.getElementById('modalZoom').style.display = 'flex';
+        }
+
+        function actualizarVistaModal() {
+            const imgModal = document.getElementById('imgZoomAmpliada');
+            const btnPrev = document.getElementById('btnPrevZoom');
+            const btnNext = document.getElementById('btnNextZoom');
+
+            imgModal.src = RUTA_FOTOS + galeriaActual[indiceFotoActual];
+            if (galeriaActual.length <= 1) {
+                btnPrev.style.display = 'none'; btnNext.style.display = 'none';
+            } else {
+                btnPrev.style.display = 'block'; btnNext.style.display = 'block';
+            }
+        }
+
+        function cambiarFotoModal(direccion) {
+            indiceFotoActual += direccion;
+            if (indiceFotoActual < 0) indiceFotoActual = galeriaActual.length - 1;
+            if (indiceFotoActual >= galeriaActual.length) indiceFotoActual = 0;
+            actualizarVistaModal();
+        }
+
+        function cerrarZoom() { document.getElementById('modalZoom').style.display = 'none'; }
+
+        // Inicializar Todo
+        document.addEventListener('DOMContentLoaded', () => {
+            initMiniPromos();
+            renderizar(productosTotales);
+        });
+    </script>
+</body>
+</html>
