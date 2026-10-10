@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotografía Vitale | San Martín, Mendoza</title>
+    <link rel="icon" type="image/jpeg" href="logochico3.png">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+       :root {
+    --primary: #e32322; /* Rojo Kodak clásico, con mucha fuerza */
+    --dark: #1a1a1a;    /* Negro más profundo, como rollo fotográfico */
+    --light: #fff5d1;   /* Un amarillo/crema muy suave y nostálgico */
+    --whatsapp: #25d366;
+}
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            scroll-behavior: smooth;
+        }
+
+        .header-banner {
+            width: 100%;
+            line-height: 0; 
+            font-size: 0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .header-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ========================================== */
+        /* CARROUSEL DE PROMOCIONES                   */
+        /* ========================================== */
+        .carousel-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 30px auto 10px auto;
+            padding: 0 20px;
+            overflow: hidden;
+        }
+        
+        .carousel-viewport {
+            overflow: hidden;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            position: relative;
+        }
+
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%;
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            cursor: pointer;
+        }
+
+        /* COLORES DE FONDO PARA LAS PROMOS */
+        .promo-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 40px 50px;
+            color: white;
+            min-height: 280px;
+            background: linear-gradient(135deg, #2d3436 0%, #4a5459 100%); /* Gris oscuro / Base */
+        }
+        .promo-content.bg-rojo { background: linear-gradient(135deg, var(--primary) 0%, #ee1313 100%); }
+        .promo-content.bg-verde { background: linear-gradient(135deg, #2e4a31 0%, #5c8d62 100%); }
+        .promo-content.bg-azul { background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%); }
+        .promo-content.bg-naranja { background: linear-gradient(135deg, #d35400 0%, #e67e22 100%); }
+
+        .promo-text {
+            flex: 1;
+            padding-right: 30px;
+        }
+
+        .promo-badge {
+            background: #f1c40f;
+            color: #2d3436;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+
+        .promo-text h2 { font-size: 2.2rem; margin-bottom: 10px; line-height: 1.2; }
+        .promo-text p { font-size: 1.1rem; color: #dfe6e9; margin-bottom: 15px; }
+        .promo-price { font-size: 2rem; font-weight: 700; color: #fff; }
+
+        .promo-img-container {
+            width: 320px;
+            height: 220px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .promo-img-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 15px rgba(0,0,0,0.3));
+            transition: transform 0.3s;
+        }
+
+        .carousel-slide:hover .promo-img-container img { transform: scale(1.05) rotate(-2deg); }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.25);
+            color: white;
+            border: none;
+            width: 45px; height: 45px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+            z-index: 10;
+        }
+
+        .carousel-btn:hover { background: rgba(255,255,255,0.6); color: var(--dark); }
+        .carousel-btn.prev { left: 15px; }
+        .carousel-btn.next { right: 15px; }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .dot {
+            width: 12px; height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .dot.active { background: white; transform: scale(1.2); }
+
+        /* MODAL PROMOCIONAL */
+        .modal-promo-overlay {
+            display: none; position: fixed; z-index: 990; left: 0; top: 0;
+            width: 100%; height: 100%; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px); justify-content: center; align-items: center; padding: 20px;
+        }
+        .modal-promo-content {
+            background: white; border-radius: 15px; width: 100%; max-width: 500px;
+            padding: 30px; position: relative; animation: slideUp 0.3s ease; text-align: center;
+        }
+        .modal-promo-content img {
+            max-width: 100%; height: 220px; object-fit: contain; cursor: pointer;
+            margin-bottom: 15px; transition: 0.2s;
+        }
+        .modal-promo-content img:hover { transform: scale(1.03); }
+        .modal-promo-content h3 { font-size: 1.6rem; color: var(--dark); margin-bottom: 10px; }
+        .modal-promo-content p { color: #636e72; font-size: 1rem; margin-bottom: 15px; }
+        .modal-promo-content .precio-modal { font-size: 2rem; color: var(--primary); font-weight: 700; margin-bottom: 20px; }
+        .btn-cerrar-promo {
+            position: absolute; top: 15px; right: 20px; background: none; border: none;
+            font-size: 2.2rem; color: #b2bec3; cursor: pointer; transition: 0.2s; line-height: 1;
+        }
+        .btn-cerrar-promo:hover { color: var(--primary); }
+        
+        .hint-zoom { display:block; font-size: 0.8rem; color:#b2bec3; margin-top:-10px; margin-bottom: 15px; }
+
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        /* ========================================== */
+        /* SECCIÓN DE INTRODUCCIÓN CORTA              */
+        /* ========================================== */
+        .intro-section {
+            text-align: center;
+            padding: 40px 20px;
+            background-color: var(--light);
+        }
+
+        .intro-section p {
+            font-size: 1.25rem;
+            max-width: 800px;
+            margin: 0 auto 30px auto;
+            font-weight: 400;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .btn-main {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            transition: 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-main:hover {
+            background-color: #ff5252;
+            transform: translateY(-3px);
+        }
+
+        /* ========================================== */
+        /* HISTORIA FAMILIAR                          */
+        /* ========================================== */
+        .nosotros-section {
+            background-color: white;
+            padding: 80px 20px;
+            text-align: center;
+            border-top: 2px solid #e1e5ee;
+        }
+        .nosotros-container { max-width: 1000px; margin: 0 auto; }
+        .nosotros-section h2 { font-size: 2.2rem; margin-bottom: 30px; color: var(--dark); }
+        .nosotros-section p { font-size: 1.1rem; line-height: 1.8; color: #636e72; margin-bottom: 20px; }
+
+        /* ========================================== */
+        /* CATEGORÍAS (ENLACES AL CATÁLOGO)           */
+        /* ========================================== */
+        .container { max-width: 1200px; margin: 0 auto 80px auto; padding: 0 20px; }
+        .section-title { text-align: center; font-size: 2.2rem; margin-bottom: 10px; }
+        .subtitle { text-align: center; margin-bottom: 40px; color: #636e72; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card {
+            background: white; border-radius: 15px; padding: 30px; text-align: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer; border: 2px solid transparent; display: flex; flex-direction: column;
+            justify-content: space-between; align-items: center;
+        }
+        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 25px rgba(0,0,0,0.1); border-color: var(--primary); }
+        .card h3 { font-size: 1.5rem; margin: 15px 0; color: var(--dark); }
+        .card p { color: #636e72; font-size: 0.95rem; }
+        .icon { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+
+        .btn-card-catalogo {
+            width: 100%; margin-top: 20px; padding: 10px 15px; background-color: var(--dark); color: #ffffff;
+            font-size: 0.9rem; font-weight: 600; text-decoration: none; border-radius: 8px; display: flex;
+            align-items: center; justify-content: center; gap: 8px; transition: 0.25s ease;
+        }
+        .card:hover .btn-card-catalogo { background-color: var(--primary); transform: translateY(-2px); }
+
+        /* FOOTER Y WHATSAPP */
+        .whatsapp-float {
+            position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: var(--whatsapp);
+            color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;
+        }
+        .whatsapp-float:hover { transform: scale(1.1); }
+        .footer-comercial { background-color: var(--dark); color: white; padding: 45px 20px 20px 20px; }
+        .footer-container { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 1fr; gap: 35px; align-items: center; }
+        .footer-col h3 { font-size: 1.5rem; margin-bottom: 8px; color: white; }
+        .footer-desc { font-size: 0.9rem; color: #b2bec3; margin-bottom: 18px; }
+        .footer-dato { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 0.92rem; color: #f5f6fa; }
+        .footer-dato i { color: var(--primary); font-size: 1.1rem; margin-top: 3px; }
+        .link-wsp { color: #f5f6fa; text-decoration: none; transition: 0.2s; }
+        .link-wsp:hover { color: var(--whatsapp); }
+        .footer-copy { text-align: center; margin-top: 35px; padding-top: 18px; border-top: 1px solid rgba(255, 255, 255, 0.1); font-size: 0.82rem; color: #b2bec3; }
+
+        /* ZOOM MODAL (LIGHTBOX) PARA LAS PROMOS */
+        .img-zoom-modal {
+            display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px;
+        }
+        .img-zoom-modal img {
+            max-width: 90%; max-height: 85vh; object-fit: contain; border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); animation: zoomAnim 0.25s ease-out;
+        }
+        .img-zoom-close { position: absolute; top: 20px; right: 25px; color: white; font-size: 2.2rem; font-weight: bold; cursor: pointer; transition: 0.2s; z-index: 1010; }
+        .img-zoom-close:hover { color: var(--primary); }
+        @keyframes zoomAnim { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* AJUSTES PARA CELULARES */
+        @media (max-width: 768px) {
+            .carousel-container { padding: 0 10px; margin: 15px auto; }
+            .promo-content { flex-direction: column-reverse; padding: 25px 20px; text-align: center; min-height: auto; }
+            .promo-text { padding-right: 0; margin-top: 15px; }
+            .promo-text h2 { font-size: 1.6rem; }
+            .promo-price { font-size: 1.6rem; }
+            .promo-img-container { width: 100%; height: 160px; }
+            .carousel-btn { width: 35px; height: 35px; font-size: 1rem; }
+            .carousel-btn.prev { left: 10px; }
+            .carousel-btn.next { right: 10px; }
+            
+            .intro-section, .nosotros-section { padding: 30px 15px !important; }
+            .section-title, .nosotros-section h2 { font-size: 1.5rem !important; margin-bottom: 8px !important; }
+            .grid { gap: 15px !important; }
+            .card { padding: 20px 15px !important; }
+            .footer-container { grid-template-columns: 1fr; gap: 25px; }
+            .footer-comercial { padding: 30px 15px 15px 15px; }
+            .whatsapp-float { width: 50px !important; height: 50px !important; bottom: 20px !important; right: 20px !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-banner">
+        <img src="Logo2.jpeg" alt="Banner Fotografía Vitale">
+    </header>
+
+    <!-- CARROUSEL DE PROMOCIONES -->
+    <section class="carousel-container">
+        <div class="carousel-viewport">
+            <div class="carousel-track" id="carouselTrack">
+                <!-- Se inyecta por JS -->
+            </div>
+            <button class="carousel-btn prev" onclick="moverCarousel(-1)">&#10094;</button>
+            <button class="carousel-btn next" onclick="moverCarousel(1)">&#10095;</button>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <!-- Modal Detalle Promo -->
+    <div id="modalPromo" class="modal-promo-overlay" onclick="cerrarModalPromo()">
+        <div class="modal-promo-content" onclick="event.stopPropagation()">
+            <button class="btn-cerrar-promo" onclick="cerrarModalPromo()">&times;</button>
+            <div id="promoDetails"></div>
+        </div>
+    </div>
+
+    <section class="intro-section">
+        <p>Tu multiespacio de confianza. Desde nuestro clásico laboratorio fotográfico profesional, hasta el mejor equipamiento en tecnología, computacion, cuchillería, camping, caza y pesca.</p>
+        <a href="catalogo.html" class="btn-main" style="background-color: var(--dark);">
+            <i class="fa-solid fa-layer-group"></i> Ver Catálogo Completo
+        </a>
+    </section>
+
+    <div class="container" id="categorias">
+        <h2 class="section-title">Nuestros Rubros</h2>
+        <p class="subtitle">(Hacé clic en una categoría para ir directo al catálogo completo)</p>
+        
+        <div class="grid">
+            <!-- La tarjeta ahora redirige directo al catálogo -->
+            <div class="card" onclick="window.location.href='catalogo.html'">
+                <div>
+                    <div class="icon"><i class="fa-solid fa-camera-retro"></i></div>
+                    <h3>Fotografía y Laboratorio</h3>
+                    <p>Revelados profesionales, impresiones de alta calidad, ampliaciones y gigantografías en lona. Ademas trabajamos con precios por cantidad y precios exclusivos para fotografos.</p>
+                </div>
+                <div class="btn-card-catalogo">Ver catálogo completo <i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+
+            <!-- La tarjeta ahora redirige directo al catálogo -->
+            <div class="card" onclick="window.location.href='catalogo.html'">
+                <div>
+                    <div class="icon"><i class="fa-solid fa-laptop"></i></div>
+                    <h3>Tecnología y Computación</h3>
+                    <p>Joysticks para PC/PS, auriculares, parlantes, accesorios de tecnología, cargadores, handys y todo en iluminación LED.</p>
+                </div>
+                <div class="btn-card-catalogo">Ver catálogo completo <i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+
+            <!-- La tarjeta ahora redirige directo al catálogo -->
+            <div class="card" onclick="window.location.href='catalogo.html'">
+                <div>
+                    <div class="icon"><i class="fa-solid fa-campground"></i></div>
+                    <h3>Camping, Caza y Pesca</h3>
+                    <p>Rifles de aire comprimido, pistolas de CO2, Artículos de pesca, Balines, Repuestos, cuchillería de primera y accesorios.</p>
+                </div>
+                <div class="btn-card-catalogo">Ver catálogo completo <i class="fa-solid fa-arrow-right"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <section id="nosotros" class="nosotros-section">
+        <div class="nosotros-container">
+            <h2>Nuestra Historia</h2>
+            <p>Fotografía Vitale es un negocio familiar creado en 2006 por Mauricio Vitale. Desde nuestros inicios nos hemos dedicado con pasión al revelado y procesamiento de imágenes, sumando con el tiempo nuevos rubros como tecnología, computación y equipamiento para camping, caza y pesca.</p>
+            <p>Nuestra visión es seguir adaptándonos a los avances tecnológicos para ofrecer soluciones prácticas, actuales y de calidad a las familias de nuestra comunidad.</p>
+        </div>
+    </section>
+
+    <a href="https://wa.me/+5492634779824?text=Hola!%20Estuve%20viendo%20la%20página%20web%20y%20quería%20hacer%20una%20consulta." class="whatsapp-float" target="_blank">
+        <svg viewBox="0 0 32 32" width="35" height="35" fill="white"><path d="M16 2.67C8.64 2.67 2.67 8.64 2.67 16c0 2.34.61 4.54 1.68 6.47L2.67 29.33l7.03-1.68c1.88 1.02 4.02 1.68 6.3 1.68 7.36 0 13.33-5.97 13.33-13.33S23.36 2.67 16 2.67zm7.66 19.26c-.32.88-1.58 1.64-2.22 1.74-.58.08-1.34.25-4.22-.95-3.48-1.45-5.75-5-5.93-5.24-.18-.24-1.41-1.89-1.41-3.6 0-1.72.9-2.56 1.22-2.92.32-.36.7-.45.93-.45h.68c.24 0 .56-.09.84.58.3.72 1 2.45 1.09 2.63.09.18.15.39.03.63-.12.24-.18.39-.36.6-.18.21-.38.45-.53.59-.18.18-.38.37-.17.73.21.36.93 1.54 2 2.5 1.38 1.24 2.54 1.62 2.9 1.8.36.18.57.15.78-.09.21-.24.9-1.05 1.14-1.41.24-.36.48-.3.81-.18.33.12 2.1.99 2.46 1.17.36.18.6.27.69.42.09.15.09.87-.23 1.75z"/></svg>
+    </a>
+
+    <footer class="footer-comercial">
+        <div class="footer-container">
+            <div class="footer-col footer-info">
+                <h3>Fotografía Vitale</h3>
+                <p class="footer-desc">Laboratorio fotográfico, tecnología, computación y equipamiento para camping, caza y pesca.</p>
+                <div class="footer-dato">
+                    <i class="fa-solid fa-location-dot"></i> <span>9 de Julio 73, San Martín, Mendoza</span>
+                </div>
+                <div class="footer-dato">
+                    <i class="fa-solid fa-clock"></i>
+                    <div><strong>Horarios de atención:</strong><br>Lunes a Sabados: 09:00 a 13:00 y 17:00 a 21:00 hs</div>
+                </div>
+                <div class="footer-dato">
+                    <i class="fa-brands fa-whatsapp"></i> <a href="https://wa.me/+5492634779824" target="_blank" class="link-wsp">+54 9 2634 77-9824</a>
+                </div>
+            </div>
+            <div class="footer-col footer-mapa">
+                <iframe src="https://www.google.com/maps?q=9+de+Julio+73,+San+Martin,+Mendoza&output=embed" width="100%" height="220" style="border:0; border-radius: 10px;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+        <div class="footer-copy"><p>© 2026 Fotografía Vitale. Todos los derechos reservados.</p></div>
+    </footer>
+
+    <!-- Modal Zoom Fotografía de Promos -->
+    <div id="modalZoom" class="img-zoom-modal" onclick="cerrarZoom()">
+        <span class="img-zoom-close">&times;</span>
+        <img id="imgZoomAmpliada" src="" alt="Zoom Producto" onclick="event.stopPropagation()">
+    </div>
+
+    <script>
+        const RUTA_FOTOS = "productos/";
+        const NUMERO_WSP = "+5492634779824";
+
+        /* DATOS DE PROMOCIONES DEL CARROUSEL */
+        const promos = [
+            {
+                badge: 'OFERTA DESTACADA',
+                titulo: 'Kit Defensa Hogareña',
+                descripcion: 'Pistola CO2 Fox + 4 garrafas + 500 BBs',
+                precio: '$155.000',
+                imagen: 'foxp92.jpeg',
+                bgClass: 'bg-naranja', /* <--- Acá podés usar bg-rojo, bg-verde, bg-azul, bg-naranja o vacío */
+                wspText: 'Hola! Me interesa la promo del Kit de Defensa Hogareña por $155.000'
+            },
+            {
+                badge: 'SALTO AL PCP',
+                titulo: 'Kit Rifle Fox Demon 5.5mm',
+                descripcion: 'Rifle PCP + Inflador',
+                precio: '$700.000',
+                imagen: 'demonoferta.jpeg',
+                bgClass: 'bg-verde', /* <--- Ideal para caza/outdoor */
+                wspText: 'Hola! Me interesa la promo del Kit PCP Fox Demon por $700.000'
+            },
+            {
+                badge: 'OFERTA POR TIEMPO LIMITADO',
+                titulo: 'Promo Fotos + Album',
+                descripcion: '40 Fotos tamaño 10x15 + Album. Tu historia en papel se ve mejor.',
+                precio: '$23.000',
+                imagen: 'promo40fotos.jpeg',
+                bgClass: 'bg-rojo', /* <--- Acá podés usar bg-rojo, bg-verde, bg-azul, bg-naranja o vacío */
+                wspText: 'Hola! Me interesa la promo de las 40 fotos + album por $23.000'
+            }
+        ];
+
+        /* LOGICA DEL CARROUSEL */
+        let currentSlide = 0;
+        let slideInterval;
+
+        function initCarousel() {
+            const track = document.getElementById('carouselTrack');
+            const dotsContainer = document.getElementById('carouselDots');
+            if(!track) return;
+            track.innerHTML = ''; dotsContainer.innerHTML = '';
+
+            promos.forEach((promo, index) => {
+                const slide = document.createElement('div');
+                slide.className = 'carousel-slide';
+                slide.onclick = () => abrirModalPromo(index);
+                slide.innerHTML = `
+                    <div class="promo-content ${promo.bgClass || ''}">
+                        <div class="promo-text">
+                            <span class="promo-badge">${promo.badge}</span>
+                            <h2>${promo.titulo}</h2>
+                            <p>${promo.descripcion}</p>
+                            <div class="promo-price">${promo.precio}</div>
+                        </div>
+                        <div class="promo-img-container">
+                            <img src="${promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen}" alt="${promo.titulo}">
+                        </div>
+                    </div>
+                `;
+                track.appendChild(slide);
+
+                const dot = document.createElement('div');
+                dot.className = `dot ${index === 0 ? 'active' : ''}`;
+                dot.onclick = () => irASlide(index);
+                dotsContainer.appendChild(dot);
+            });
+            iniciarAutoPlay();
+        }
+
+        function actualizarCarousel() {
+            const track = document.getElementById('carouselTrack');
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            document.querySelectorAll('.dot').forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moverCarousel(dir) {
+            currentSlide += dir;
+            if (currentSlide < 0) currentSlide = promos.length - 1;
+            if (currentSlide >= promos.length) currentSlide = 0;
+            actualizarCarousel(); reiniciarAutoPlay();
+        }
+
+        function irASlide(index) {
+            currentSlide = index;
+            actualizarCarousel(); reiniciarAutoPlay();
+        }
+
+        function iniciarAutoPlay() {
+            slideInterval = setInterval(() => moverCarousel(1), 5000); // 6 segundos automático
+        }
+
+        function reiniciarAutoPlay() {
+            clearInterval(slideInterval); iniciarAutoPlay();
+        }
+
+        function abrirModalPromo(index) {
+            const promo = promos[index];
+            const modal = document.getElementById('modalPromo');
+            const details = document.getElementById('promoDetails');
+            const imgPath = promo.imagen.startsWith('http') ? promo.imagen : RUTA_FOTOS + promo.imagen;
+            
+            details.innerHTML = `
+                <img src="${imgPath}" alt="${promo.titulo}" onclick="abrirZoom('${imgPath}')">
+                <span class="hint-zoom">(Tocá la foto para ampliarla)</span>
+                <h3>${promo.titulo}</h3>
+                <p>${promo.descripcion}</p>
+                <div class="precio-modal">${promo.precio}</div>
+                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" class="btn-main" style="width: 100%; border-radius: 8px;">
+                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo
+                </a>
+            `;
+            modal.style.display = 'flex';
+            clearInterval(slideInterval); // Pausa el carrousel al ver la promo
+        }
+
+        function cerrarModalPromo() {
+            document.getElementById('modalPromo').style.display = 'none';
+            reiniciarAutoPlay();
+        }
+
+        function abrirZoom(src) {
+            document.getElementById('imgZoomAmpliada').src = src;
+            document.getElementById('modalZoom').style.display = 'flex';
+        }
+
+        function cerrarZoom() { 
+            document.getElementById('modalZoom').style.display = 'none'; 
+        }
+
+        document.addEventListener('DOMContentLoaded', initCarousel);
+    </script>
+</body>
+</html>
