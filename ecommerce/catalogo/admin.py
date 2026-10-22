@@ -3,7 +3,7 @@ from django.contrib import admin, messages
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Categoria, ImagenProducto, Producto
+from .models import Categoria, ImagenProducto, Producto, SiteStatistics
 
 
 def _miniatura(imagen, alto=50):
@@ -122,3 +122,40 @@ class ProductoAdmin(admin.ModelAdmin):
     @admin.action(description="Quitar de destacados", permissions=["change"])
     def quitar_destacado(self, request, queryset):
         self._actualizar(request, queryset, "quitados de destacados", destacado=False)
+
+
+@admin.register(SiteStatistics)
+class SiteStatisticsAdmin(admin.ModelAdmin):
+    """
+    Panel de administración para métricas globales de visitas (solo lectura).
+    Implementa restricciones de Singleton para proteger el contador.
+    """
+
+    list_display = ("__str__", "total_visitas", "ultima_visita")
+    readonly_fields = ("total_visitas", "ultima_visita")
+    fieldsets = (
+        (
+            "Métricas Globales de Visitas",
+            {
+                "fields": ("total_visitas", "ultima_visita"),
+                "description": (
+                    "Total acumulado de visitas recibidas en la tienda y catálogo. "
+                    "Este valor es de solo lectura y se actualiza automáticamente con cada visita."
+                ),
+            },
+        ),
+    )
+
+    def has_add_permission(self, request):
+        # Solo se permite agregar si no existe el registro singleton
+        return not SiteStatistics.objects.exists()
+
+    def has_delete_permission(self, request, obj=None):
+        # Deshabilitar eliminación para no perder el histórico de visitas
+        return False
+
+    def changelist_view(self, request, extra_context=None):
+        # Asegurar que el registro singleton exista al visualizar el panel
+        SiteStatistics.obtener()
+        return super().changelist_view(request, extra_context=extra_context)
+

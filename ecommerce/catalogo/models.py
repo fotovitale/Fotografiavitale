@@ -14,7 +14,9 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 from django.utils.text import slugify
+
 
 
 def generar_slug_unico(instancia, texto, campo="slug"):
@@ -241,3 +243,56 @@ class ImagenProducto(models.Model):
 
     def __str__(self):
         return f"Imagen de {self.producto}"
+
+
+class SiteStatistics(models.Model):
+    """
+    Modelo Singleton para estadísticas globales del sitio y catálogo.
+    Mantiene un contador persistente del total acumulado de visitas.
+    """
+
+    total_visitas = models.PositiveBigIntegerField(
+        "total de visitas",
+        default=0,
+        help_text="Contador global acumulado de visitas a la tienda.",
+    )
+    ultima_visita = models.DateTimeField(
+        "última visita",
+        auto_now=True,
+        help_text="Fecha y hora de la última visita registrada.",
+    )
+
+    class Meta:
+        verbose_name = "estadística del sitio"
+        verbose_name_plural = "estadísticas del sitio"
+
+    def __str__(self):
+        return f"Estadísticas del Sitio ({self.total_visitas} visitas)"
+
+    def save(self, *args, **kwargs):
+        # Patrón Singleton: fuerza siempre la clave primaria a 1
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        # Protege el registro único para evitar pérdida de métricas
+        pass
+
+    @classmethod
+    def obtener(cls):
+        """Obtiene o crea la instancia única de estadísticas (Singleton)."""
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+    @classmethod
+    def incrementar(cls):
+        """
+        Incrementa de forma atómica y concurrente (+1) el contador de visitas.
+        Usa F() expressions para evitar condiciones de carrera (race conditions).
+        """
+        cls.objects.get_or_create(pk=1)
+        cls.objects.filter(pk=1).update(
+            total_visitas=models.F("total_visitas") + 1,
+            ultima_visita=timezone.now(),
+        )
+

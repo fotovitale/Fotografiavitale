@@ -5,7 +5,8 @@ from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Categoria, Producto
+from .models import Categoria, Producto, SiteStatistics
+
 
 
 class ProductoModelTests(TestCase):
@@ -153,4 +154,60 @@ class CatalogoViewsTests(TestCase):
     def test_rutas_alias_compatibles(self):
         self.assertEqual(self.client.get("/index.html").status_code, 200)
         self.assertEqual(self.client.get("/catalogo.html").status_code, 200)
+
+
+class SiteStatisticsTests(TestCase):
+    def setUp(self):
+        SiteStatistics.objects.all().delete()
+
+    def test_singleton_get_or_create(self):
+        stat1 = SiteStatistics.obtener()
+        stat2 = SiteStatistics.obtener()
+        self.assertEqual(stat1.pk, 1)
+        self.assertEqual(stat2.pk, 1)
+        self.assertEqual(SiteStatistics.objects.count(), 1)
+
+    def test_singleton_save_fuerza_pk_1(self):
+        stat = SiteStatistics(total_visitas=10)
+        stat.save()
+        stat2 = SiteStatistics(total_visitas=20)
+        stat2.save()
+        self.assertEqual(SiteStatistics.objects.count(), 1)
+        self.assertEqual(SiteStatistics.objects.get(pk=1).total_visitas, 20)
+
+    def test_incrementar_atomico(self):
+        SiteStatistics.incrementar()
+        SiteStatistics.incrementar()
+        stat = SiteStatistics.obtener()
+        self.assertEqual(stat.total_visitas, 2)
+        self.assertIsNotNone(stat.ultima_visita)
+
+    def test_middleware_cuenta_visitas_inicio_y_catalogo(self):
+        self.assertEqual(SiteStatistics.obtener().total_visitas, 0)
+        self.client.get(reverse("inicio"))
+        self.assertEqual(SiteStatistics.obtener().total_visitas, 1)
+
+        self.client.get(reverse("catalogo"))
+        self.assertEqual(SiteStatistics.obtener().total_visitas, 2)
+
+    def test_middleware_ignora_rutas_admin(self):
+        admin_user = User.objects.create_superuser("admin_test", "a@test.com", "pass123")
+        self.client.force_login(admin_user)
+
+        self.assertEqual(SiteStatistics.obtener().total_visitas, 0)
+        self.client.get("/admin/")
+        self.client.get("/admin/catalogo/sitestatistics/")
+        self.assertEqual(SiteStatistics.obtener().total_visitas, 0)
+
+    def test_admin_sitestatistics_solo_lectura(self):
+        admin_user = User.objects.create_superuser("admin_test2", "a2@test.com", "pass123")
+        self.client.force_login(admin_user)
+        resp = self.client.get(reverse("admin:catalogo_sitestatistics_changelist"))
+        self.assertEqual(resp.status_code, 200)
+
+        url_change = reverse("admin:catalogo_sitestatistics_change", args=[1])
+        resp_change = self.client.get(url_change)
+        self.assertEqual(resp_change.status_code, 200)
+        self.assertContains(resp_change, "total_visitas")
+
 
