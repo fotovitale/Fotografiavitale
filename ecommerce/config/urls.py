@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 
 # Textos del panel de administración
 admin.site.site_header = "Fotografía Vitale — Administración"
@@ -11,6 +11,7 @@ admin.site.index_title = "Gestión de la tienda"
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("", include("catalogo.urls")),
 ]
 
 if settings.DEBUG:

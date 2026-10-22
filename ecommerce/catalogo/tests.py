@@ -110,3 +110,47 @@ class AdminPermisosTests(TestCase):
         self.assertEqual(
             self.client.get(reverse("admin:pedidos_pedido_changelist")).status_code, 403
         )
+
+
+class CatalogoViewsTests(TestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.cat = Categoria.objects.get(slug="fotografia")
+        cls.p1 = Producto.objects.create(
+            nombre="Cámara Vintage",
+            categoria=cls.cat,
+            precio=Decimal("45000"),
+            stock=3,
+            activo=True,
+            destacado=True,
+            etiqueta_promo="OFERTA ESPECIAL",
+        )
+        cls.p2 = Producto.objects.create(
+            nombre="Rollo 35mm",
+            categoria=cls.cat,
+            precio=None,
+            stock=0,
+            activo=True,
+        )
+
+    def test_pagina_inicio_renderiza_correctamente(self):
+        resp = self.client.get(reverse("inicio"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, "index.html")
+        self.assertIn("promos", resp.context)
+        self.assertIn("promos_json", resp.context)
+        self.assertContains(resp, "Cámara Vintage")
+
+    def test_pagina_catalogo_renderiza_correctamente(self):
+        resp = self.client.get(reverse("catalogo"))
+        self.assertEqual(resp.status_code, 200)
+        self.assertTemplateUsed(resp, "catalogo.html")
+        self.assertIn("categorias", resp.context)
+        self.assertIn("productos_json", resp.context)
+        self.assertContains(resp, "Cámara Vintage")
+        self.assertContains(resp, "Rollo 35mm")
+
+    def test_rutas_alias_compatibles(self):
+        self.assertEqual(self.client.get("/index.html").status_code, 200)
+        self.assertEqual(self.client.get("/catalogo.html").status_code, 200)
+

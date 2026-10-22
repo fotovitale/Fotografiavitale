@@ -17,7 +17,10 @@ load_dotenv(BASE_DIR / ".env")
 
 def _env_list(nombre, default=""):
     """Lee una variable de entorno separada por comas y la devuelve como lista."""
-    return [v.strip() for v in os.getenv(nombre, default).split(",") if v.strip()]
+    items = [v.strip() for v in os.getenv(nombre, default).split(",") if v.strip()]
+    if nombre == "DJANGO_ALLOWED_HOSTS" and "testserver" not in items:
+        items.append("testserver")
+    return items
 
 
 # ---------------------------------------------------------------------------
@@ -33,7 +36,7 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("Falta DJANGO_SECRET_KEY en el archivo .env")
 
-ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost")
+ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,testserver")
 CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 
@@ -119,6 +122,9 @@ USE_TZ = True
 # Archivos estáticos y multimedia
 # ---------------------------------------------------------------------------
 STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
