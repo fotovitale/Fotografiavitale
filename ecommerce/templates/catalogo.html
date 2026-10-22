@@ -22,6 +22,7 @@
             --promo-bg: #fff0f0;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        img { max-width: 100%; height: auto; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; overflow-x: hidden; }
 
         /* HEADER Y NAVEGACIÓN */
@@ -87,22 +88,177 @@
         @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* GRILLA DE PRODUCTOS NORMALES */
-        .catalogo-grid { max-width: 1100px; margin: 0 auto 15px auto; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .producto-card { background: white; border-radius: 12px; padding: 15px; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border: 1px solid #f1f2f6; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s; }
-        .producto-card:hover { transform: translateY(-4px); }
-        .producto-card .img-principal { width: 100%; height: 180px; object-fit: contain; background-color: #fff; margin-bottom: 8px; cursor: pointer; border-radius: 6px; }
-        .thumbs-container { display: flex; justify-content: center; gap: 6px; margin-bottom: 10px; min-height: 38px; }
-        .thumb-img { width: 36px; height: 36px; object-fit: contain; background: #fff; border: 1px solid #dfe6e9; border-radius: 6px; cursor: pointer; transition: 0.2s; padding: 2px; }
-        .thumb-img:hover, .thumb-img.activa { border-color: var(--primary); box-shadow: 0 0 5px rgba(255, 107, 107, 0.4); transform: scale(1.05); }
-        .producto-card h3 { font-size: 1rem; margin-bottom: 5px; color: var(--dark); }
-        .producto-card .categoria-tag { font-size: 0.75rem; color: #b2bec3; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-        .producto-card .precio { color: var(--primary); font-weight: 700; font-size: 1.1rem; margin-bottom: 12px; }
-        .btn-consultar { background: var(--dark); color: white; text-decoration: none; padding: 9px 15px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; display: inline-block; transition: 0.2s; }
-        .btn-consultar:hover { background-color: var(--primary); }
-        .sin-resultados { grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: #636e72; }
+        .catalogo-grid {
+            max-width: 1100px;
+            margin: 0 auto 20px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .producto-card {
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            border: 1px solid #f1f2f6;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 0; /* Evita que la celda de la grilla se desborde */
+            overflow: hidden; /* Evita que imágenes o textos salgan de la tarjeta */
+            box-sizing: border-box;
+            position: relative;
+        }
+        .producto-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+        }
+        .img-card-container {
+            width: 100%;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fafafa;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .producto-card .img-principal {
+            width: 100%;
+            max-width: 100%;
+            height: 100%;
+            max-height: 180px;
+            object-fit: contain;
+            background-color: transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: transform 0.25s ease;
+            display: block;
+        }
+        .producto-card .img-principal:hover {
+            transform: scale(1.04);
+        }
+        .thumbs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 10px;
+            min-height: 38px;
+            flex-wrap: wrap;
+            max-width: 100%;
+            overflow: hidden;
+        }
+        .thumb-img {
+            width: 36px;
+            height: 36px;
+            max-width: 100%;
+            object-fit: contain;
+            background: #fff;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: 0.2s;
+            padding: 2px;
+            flex-shrink: 0;
+        }
+        .thumb-img:hover, .thumb-img.activa {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px rgba(255, 107, 107, 0.4);
+            transform: scale(1.05);
+        }
+        .producto-card h3 {
+            font-size: 0.98rem;
+            margin-bottom: 6px;
+            color: var(--dark);
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            min-height: 2.6em;
+        }
+        .producto-card .categoria-tag {
+            font-size: 0.72rem;
+            color: #88929b;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .producto-card .precio {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 1.15rem;
+            margin-bottom: 12px;
+        }
+        .btn-consultar {
+            background: var(--whatsapp);
+            color: white;
+            text-decoration: none;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            min-height: 48px; /* Área táctil accesible de 48px para dedos */
+            box-sizing: border-box;
+            transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            box-shadow: 0 3px 8px rgba(37, 211, 102, 0.28);
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            text-align: center;
+            line-height: 1.2;
+        }
+        .btn-consultar:hover {
+            background-color: #20ba5a;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(37, 211, 102, 0.38);
+        }
+        .btn-consultar:active {
+            transform: scale(0.98);
+        }
+        .btn-consultar i {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        .sin-resultados {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 60px 20px;
+            color: #636e72;
+        }
 
         /* WHATSAPP Y ZOOM LIGHTBOX */
-        .whatsapp-float { position: fixed; width: 60px; height: 60px; bottom: 30px; right: 30px; background-color: var(--whatsapp); color: #FFF; border-radius: 50px; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2); z-index: 100; text-decoration: none; transition: 0.3s; }
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--whatsapp);
+            color: #FFF;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 100;
+            text-decoration: none;
+            transition: 0.3s;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
         .whatsapp-float:hover { transform: scale(1.1); }
         .img-zoom-modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.88); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px; }
         .modal-content-wrapper { position: relative; display: flex; align-items: center; justify-content: center; max-width: 90%; max-height: 85vh; }
@@ -115,32 +271,141 @@
         .btn-next { right: -60px; }
         @keyframes zoomAnim { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
-        /* AJUSTES CELULARES */
+        /* ========================================== */
+        /* AJUSTES CELULARES (MOBILE-FIRST)           */
+        /* ========================================== */
         @media (max-width: 768px) {
-            .catalogo-header { padding: 8px 10px !important; }
-            .btn-volver { width: auto !important; font-size: 0.75rem !important; }
-            .logo-mini-nav img { max-height: 58px; border-radius: 8px; border: 1px solid #e1e5ee; box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
-            
-            .mini-promos-section { padding: 0 10px; margin-top: 5px; }
-            .mini-carousel-viewport { margin: 0 30px; padding: 5px 0; }
-            
-            .mini-promo-card { flex: 0 0 100%; padding: 10px; opacity: 1; transform: scale(1); }
-            .mini-promo-card.center-card { transform: scale(1); border-color: var(--primary); opacity: 1; }
-            
-            .mini-promo-img { width: 65px; height: 65px; }
-            .mini-carousel-btn { width: 30px; height: 30px; font-size: 0.8rem; }
+            .catalogo-header { padding: 10px 12px !important; }
+            .btn-volver { width: auto !important; font-size: 0.8rem !important; padding: 6px 8px; min-height: 38px; display: inline-flex; align-items: center; }
+            .logo-mini-nav { width: auto !important; margin-right: 0 !important; }
+            .logo-mini-nav img { max-height: 48px !important; border-radius: 6px; border: 1px solid #e1e5ee; box-shadow: 0 2px 6px rgba(0,0,0,0.08); }
+            .catalogo-header h1 { font-size: 1.15rem !important; }
 
-            .catalogo-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; padding: 0 10px !important; }
-            .producto-card { padding: 10px !important; }
-            .producto-card .img-principal { height: 120px !important; margin-bottom: 6px !important; }
-            .thumb-img { width: 28px !important; height: 28px !important; }
-            .producto-card h3 { font-size: 0.9rem !important; }
-            .producto-card .precio { font-size: 1rem !important; }
-            .btn-consultar { font-size: 0.8rem !important; padding: 6px 10px !important; width: 100% !important; }
-            .whatsapp-float { width: 50px !important; height: 50px !important; bottom: 20px !important; right: 20px !important; }
+            .search-orden-row { gap: 6px !important; }
+            .search-box input { min-height: 42px !important; font-size: 0.88rem !important; padding: 8px 12px 8px 34px !important; }
+            .orden-box select { min-height: 42px !important; font-size: 0.82rem !important; padding: 8px 10px !important; }
+
+            /* Categorías: scroll horizontal fluido */
+            .categorias-bar {
+                justify-content: flex-start !important;
+                flex-wrap: nowrap !important;
+                overflow-x: auto !important;
+                padding: 4px 2px 8px 2px !important;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            .categorias-bar::-webkit-scrollbar { display: none; }
+            .btn-filtro {
+                flex-shrink: 0 !important;
+                white-space: nowrap !important;
+                min-height: 38px !important;
+                padding: 8px 14px !important;
+                font-size: 0.82rem !important;
+                border-radius: 20px !important;
+            }
+            
+            .mini-promos-section { padding: 0 10px !important; margin-top: 5px !important; }
+            .mini-carousel-viewport { margin: 0 30px !important; padding: 5px 0 !important; }
+            
+            .mini-promo-card { flex: 0 0 100% !important; padding: 10px !important; opacity: 1 !important; transform: scale(1) !important; }
+            .mini-promo-card.center-card { transform: scale(1) !important; border-color: var(--primary) !important; opacity: 1 !important; }
+            
+            .mini-promo-img { width: 65px !important; height: 65px !important; }
+            .mini-carousel-btn { width: 32px !important; height: 32px !important; font-size: 0.8rem !important; }
+
+            /* GRILLA DE PRODUCTOS: 2 COLUMNAS EN CELULARES */
+            .catalogo-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 12px !important;
+                padding: 0 10px !important;
+            }
+            .producto-card {
+                padding: 10px !important;
+                border-radius: 10px !important;
+            }
+            .img-card-container {
+                height: 135px !important;
+                margin-bottom: 6px !important;
+            }
+            .producto-card .img-principal {
+                height: 135px !important;
+                max-height: 135px !important;
+                max-width: 100% !important;
+            }
+            .thumbs-container {
+                gap: 4px !important;
+                min-height: 32px !important;
+                margin-bottom: 6px !important;
+            }
+            .thumb-img {
+                width: 28px !important;
+                height: 28px !important;
+            }
+            .producto-card h3 {
+                font-size: 0.88rem !important;
+                line-height: 1.25 !important;
+                margin-bottom: 4px !important;
+                min-height: 2.5em !important;
+            }
+            .producto-card .categoria-tag {
+                font-size: 0.68rem !important;
+                margin-bottom: 4px !important;
+            }
+            .producto-card .precio {
+                font-size: 1rem !important;
+                margin-bottom: 8px !important;
+            }
+
+            /* BOTÓN WHATSAPP MÓVIL: ÁREA TÁCTIL FÁCIL DE PRESIONAR */
+            .btn-consultar {
+                font-size: 0.86rem !important;
+                padding: 12px 8px !important;
+                min-height: 48px !important; /* Touch target estándar 48px para pulgares */
+                border-radius: 8px !important;
+                gap: 6px !important;
+                width: 100% !important;
+            }
+            .btn-consultar i {
+                font-size: 1.15rem !important;
+            }
+
+            .whatsapp-float {
+                width: 52px !important;
+                height: 52px !important;
+                bottom: 20px !important;
+                right: 20px !important;
+            }
             .whatsapp-float svg { width: 28px !important; height: 28px !important; }
             .btn-prev { left: 5px !important; }
             .btn-next { right: 5px !important; }
+        }
+
+        /* PANTALLAS MUY PEQUEÑAS (hasta 380px): 1 COLUMNA */
+        @media (max-width: 380px) {
+            .catalogo-grid {
+                grid-template-columns: 1fr !important;
+                gap: 14px !important;
+                padding: 0 12px !important;
+            }
+            .img-card-container {
+                height: 190px !important;
+            }
+            .producto-card .img-principal {
+                height: 190px !important;
+                max-height: 190px !important;
+            }
+            .producto-card h3 {
+                font-size: 0.95rem !important;
+                min-height: auto !important;
+            }
+            .producto-card .precio {
+                font-size: 1.15rem !important;
+            }
+            .btn-consultar {
+                font-size: 0.92rem !important;
+                padding: 13px 14px !important;
+                min-height: 50px !important;
+            }
         }
     </style>
 </head>
@@ -332,8 +597,8 @@
                 <h3>${promo.titulo}</h3>
                 <p>${promo.descripcion}</p>
                 <div class="precio-modal">${promo.precio}</div>
-                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" class="btn-consultar" style="width: 100%; text-align: center; font-size: 1.1rem; padding: 12px; background: var(--whatsapp);">
-                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo
+                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" rel="noopener noreferrer" class="btn-consultar" style="width: 100%; text-align: center; font-size: 1.05rem; min-height: 50px; padding: 14px 20px; background: var(--whatsapp); border-radius: 8px;">
+                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo por WhatsApp
                 </a>
             `;
             modal.style.display = 'flex';
@@ -390,14 +655,18 @@
 
                 card.innerHTML = `
                     <div>
-                        <img id="${idUnico}" class="img-principal" src="${fotoPrincipal}" alt="${prod.nombre}" data-fotos="${fotosData}" data-foto-index="0" onclick="abrirZoomProducto(this)">
+                        <div class="img-card-container">
+                            <img id="${idUnico}" class="img-principal" src="${fotoPrincipal}" alt="${prod.nombre}" data-fotos="${fotosData}" data-foto-index="0" onclick="abrirZoomProducto(this)">
+                        </div>
                         ${thumbsHTML}
                         <div class="categoria-tag">${prod.categoria}</div>
                         <h3>${prod.nombre}</h3>
                     </div>
                     <div>
                         <div class="precio">${prod.precio}</div>
-                        <a href="https://wa.me/${NUMERO_WSP}?text=${mensajeWsp}" target="_blank" class="btn-consultar">Consultar</a>
+                        <a href="https://wa.me/${NUMERO_WSP}?text=${mensajeWsp}" target="_blank" rel="noopener noreferrer" class="btn-consultar" aria-label="Consultar por WhatsApp sobre ${prod.nombre}">
+                            <i class="fa-brands fa-whatsapp"></i> <span>Consultar WhatsApp</span>
+                        </a>
                     </div>
                 `;
                 grilla.appendChild(card);

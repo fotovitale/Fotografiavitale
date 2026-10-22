@@ -30,6 +30,11 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
         body {
             background-color: var(--light);
             color: var(--dark);
@@ -272,9 +277,10 @@
         .icon { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
 
         .btn-card-catalogo {
-            width: 100%; margin-top: 20px; padding: 10px 15px; background-color: var(--dark); color: #ffffff;
-            font-size: 0.9rem; font-weight: 600; text-decoration: none; border-radius: 8px; display: flex;
+            width: 100%; margin-top: 20px; padding: 12px 18px; min-height: 48px; background-color: var(--dark); color: #ffffff;
+            font-size: 0.95rem; font-weight: 600; text-decoration: none; border-radius: 8px; display: flex;
             align-items: center; justify-content: center; gap: 8px; transition: 0.25s ease;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
         .card:hover .btn-card-catalogo { background-color: var(--primary); transform: translateY(-2px); }
 
@@ -283,6 +289,7 @@
             position: fixed; width: 60px; height: 60px; bottom: 40px; right: 40px; background-color: var(--whatsapp);
             color: #FFF; border-radius: 50px; text-align: center; font-size: 30px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
             z-index: 100; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: 0.3s;
+            touch-action: manipulation; -webkit-tap-highlight-color: transparent;
         }
         .whatsapp-float:hover { transform: scale(1.1); }
         .footer-comercial { background-color: var(--dark); color: white; padding: 45px 20px 20px 20px; }
@@ -324,9 +331,10 @@
             .section-title, .nosotros-section h2 { font-size: 1.5rem !important; margin-bottom: 8px !important; }
             .grid { gap: 15px !important; }
             .card { padding: 20px 15px !important; }
+            .btn-card-catalogo { min-height: 48px !important; padding: 12px 14px !important; font-size: 0.9rem !important; }
             .footer-container { grid-template-columns: 1fr; gap: 25px; }
             .footer-comercial { padding: 30px 15px 15px 15px; }
-            .whatsapp-float { width: 50px !important; height: 50px !important; bottom: 20px !important; right: 20px !important; }
+            .whatsapp-float { width: 52px !important; height: 52px !important; bottom: 20px !important; right: 20px !important; }
         }
     </style>
 </head>
@@ -535,9 +543,10 @@
                 <h3>${promo.titulo}</h3>
                 <p>${promo.descripcion}</p>
                 <div class="precio-modal">${promo.precio}</div>
-                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" class="btn-main" style="width: 100%; border-radius: 8px;">
-                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo
+                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" rel="noopener noreferrer" class="btn-main" style="width: 100%; min-height: 50px; padding: 14px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--whatsapp); font-size: 1.05rem;">
+                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo por WhatsApp
                 </a>
+
             `;
             modal.style.display = 'flex';
             clearInterval(slideInterval); // Pausa el carrousel al ver la promo
