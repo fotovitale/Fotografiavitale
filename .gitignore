@@ -1,0 +1,23 @@
+# Entorno virtual de Python
+.venv/
+venv/
+
+# Archivos compilados de Python
+__pycache__/
+*.py[cod]
+
+# Base de datos local (SQLite) - no se versiona
+*.sqlite3
+*.sqlite3-journal
+
+# Imágenes subidas desde el panel de administración
+ecommerce/media/
+
+# Credenciales y variables de entorno (NUNCA subir a Git)
+.env
+
+# Editores / sistema
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
