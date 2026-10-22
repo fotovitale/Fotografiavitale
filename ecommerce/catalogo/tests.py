@@ -151,8 +151,22 @@ class CatalogoViewsTests(TestCase):
         self.assertContains(resp, "Cámara Vintage")
         self.assertContains(resp, "Rollo 35mm")
 
+    def test_ordenamiento_predeterminado_destacados_y_nuevos_primero(self):
+        p_nuevo = Producto.objects.create(
+            nombre="Trípode Nuevo",
+            categoria=self.cat,
+            activo=True,
+            destacado=False,
+        )
+        resp = self.client.get(reverse("catalogo"))
+        productos = list(resp.context["productos"])
+        # self.p1 es destacado=True, por lo que debe ir primero
+        self.assertEqual(productos[0], self.p1)
+        self.assertEqual(productos[1], p_nuevo)
+
     def test_rutas_alias_compatibles(self):
         self.assertEqual(self.client.get("/index.html").status_code, 200)
+
         self.assertEqual(self.client.get("/catalogo.html").status_code, 200)
 
 

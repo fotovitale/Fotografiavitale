@@ -84,8 +84,9 @@ def catalogo(request):
         Producto.objects.filter(activo=True)
         .select_related("categoria")
         .prefetch_related("imagenes")
-        .order_by("categoria__orden", "nombre")
+        .order_by("-destacado", "-id")
     )
+
 
     promos_qs = (
         Producto.objects.filter(activo=True, destacado=True)

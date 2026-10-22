@@ -47,16 +47,17 @@ class ProductoAdmin(admin.ModelAdmin):
         "miniatura",
         "nombre",
         "categoria",
+        "destacado",
         "precio",
         "precio_oferta",
         "stock",
         "estado_stock",
         "activo",
-        "destacado",
     )
     list_display_links = ("miniatura", "nombre")
     # Edición rápida directamente desde la lista:
-    list_editable = ("precio", "precio_oferta", "stock", "activo", "destacado")
+    list_editable = ("destacado", "precio", "precio_oferta", "stock", "activo")
+
     list_filter = ("categoria", "activo", "destacado")
     search_fields = ("nombre", "sku", "descripcion")
     list_per_page = 50

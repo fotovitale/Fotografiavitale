@@ -120,9 +120,9 @@ class Producto(models.Model):
         help_text="Desmarcar para ocultarlo sin borrarlo.",
     )
     destacado = models.BooleanField(
-        "destacado",
         default=False,
-        help_text='Aparece en el carrusel de "Ofertas Especiales".',
+        verbose_name="Destacado",
+        help_text='Aparece primero en el catálogo y en el carrusel de "Ofertas Especiales".',
     )
     etiqueta_promo = models.CharField(
         "etiqueta de promoción",
@@ -138,11 +138,12 @@ class Producto(models.Model):
     class Meta:
         verbose_name = "producto"
         verbose_name_plural = "productos"
-        ordering = ["categoria__orden", "nombre"]
+        ordering = ["-destacado", "-id"]
         indexes = [
             models.Index(fields=["activo", "categoria"]),
-            models.Index(fields=["destacado"]),
+            models.Index(fields=["-destacado", "-id"]),
         ]
+
 
     def __str__(self):
         return self.nombre

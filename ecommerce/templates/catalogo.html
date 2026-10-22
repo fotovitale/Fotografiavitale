@@ -736,8 +736,16 @@
                 return coincideCategoria && coincideTexto;
             });
 
-            if (criterioOrden === 'nombre-asc') filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
+            if (criterioOrden === 'predeterminado') {
+                filtrados.sort((a, b) => {
+                    const destA = a.destacado ? 1 : 0;
+                    const destB = b.destacado ? 1 : 0;
+                    if (destB !== destA) return destB - destA;
+                    return b.id - a.id;
+                });
+            } else if (criterioOrden === 'nombre-asc') filtrados.sort((a, b) => a.nombre.localeCompare(b.nombre));
             else if (criterioOrden === 'nombre-desc') filtrados.sort((a, b) => b.nombre.localeCompare(a.nombre));
+
             else if (criterioOrden === 'precio-menor') {
                 filtrados.sort((a, b) => {
                     const pA = extraerNumeroPrecio(a), pB = extraerNumeroPrecio(b);
