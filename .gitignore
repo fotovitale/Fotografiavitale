@@ -13,6 +13,9 @@ __pycache__/
 # Imágenes subidas desde el panel de administración
 ecommerce/media/
 
+# Archivos estáticos compilados (generados por collectstatic)
+ecommerce/staticfiles/
+
 # Credenciales y variables de entorno (NUNCA subir a Git)
 .env
 
