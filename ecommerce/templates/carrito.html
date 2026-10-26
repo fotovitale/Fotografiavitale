@@ -25,6 +25,9 @@
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
     
     <style>
         :root {
@@ -720,36 +723,83 @@
             margin-top: auto;
         }
 
-        @media (max-width: 650px) {
-            .logo-area h1 { font-size: 1.05rem; }
-            .btn-carrito-nav span.carrito-text { display: none; }
-            .cart-card { padding: 18px; }
-            .item-row { flex-wrap: wrap; }
-            .item-subtotal { width: 100%; text-align: left; }
-            .btn-mercadopago-principal { font-size: 1.02rem; padding: 14px; }
-            .btn-whatsapp-secundario { font-size: 0.98rem; padding: 12px; }
+        .header-top-row {
+            display: flex;
+            align-items: center;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column !important;
+                align-items: stretch !important;
+                padding: 10px 14px 8px 14px !important;
+                gap: 8px !important;
+            }
+            .header-top-row {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                width: 100% !important;
+            }
+            .logo-area img { height: 32px !important; }
+            .logo-area h1 { font-size: 1.05rem !important; }
+            .nav-right-container {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                gap: 8px !important;
+                width: 100% !important;
+                padding-top: 6px !important;
+                border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+                flex-wrap: wrap !important;
+            }
+            .nav-right-container a.nav-link {
+                font-size: 0.85rem !important;
+                padding: 6px 12px !important;
+                border-radius: 6px !important;
+                background: rgba(255, 255, 255, 0.08) !important;
+                display: inline-flex !important;
+                align-items: center !important;
+                gap: 6px !important;
+            }
+            .btn-carrito-nav {
+                padding: 6px 14px !important;
+                font-size: 0.88rem !important;
+            }
+            .btn-carrito-nav span.carrito-text { display: inline !important; }
+            .cart-card { padding: 18px !important; }
+            .item-row { flex-wrap: wrap !important; }
+            .item-subtotal { width: 100% !important; text-align: left !important; }
+            .btn-mercadopago-principal { font-size: 1.02rem !important; padding: 14px !important; }
+            .btn-whatsapp-secundario { font-size: 0.98rem !important; padding: 12px !important; }
         }
     </style>
 </head>
 <body>
 
-    <!-- MENÚ DE NAVEGACIÓN CON BOTÓN DE CARRITO ANCLADO A LA ESQUINA SUPERIOR DERECHA -->
+    <!-- MENÚ DE NAVEGACIÓN RESPONSIVO -->
     <header>
-        <a href="{% url 'inicio' %}" class="logo-area">
-            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
-            <h1>Fotografía Vitale</h1>
-        </a>
+        <div class="header-top-row d-flex align-items-center justify-content-between">
+            <a href="{% url 'inicio' %}" class="logo-area">
+                <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+                <h1>Fotografía Vitale</h1>
+            </a>
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav d-md-none" title="Ver Carrito de Compras">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="carrito-text">Carrito</span>
+                <span class="cart-badge">{{ total_items_carrito|default:'0' }}</span>
+            </a>
+        </div>
         <div class="nav-right-container">
-            <a href="{% url 'inicio' %}" class="nav-link">Inicio</a>
-            <a href="{% url 'catalogo' %}" class="nav-link">Catálogo</a>
+            <a href="{% url 'inicio' %}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-store"></i> Catálogo</a>
             {% if request.user.is_authenticated %}
                 <a href="{% url 'perfil' %}" class="nav-link" title="Mi Cuenta"><i class="fa-solid fa-user"></i> Mi Perfil</a>
                 <a href="{% url 'logout' %}" class="nav-link" title="Cerrar sesión"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</a>
             {% else %}
                 <a href="{% url 'login' %}?next={% url 'carrito' %}" class="nav-link" title="Iniciar sesión"><i class="fa-solid fa-user"></i> Ingresar</a>
             {% endif %}
-            <!-- Botón de Carrito anclado en esquina superior derecha -->
-            <a href="{% url 'carrito' %}" class="btn-carrito-nav" id="nav-btn-carrito" title="Ver Carrito de Compras">
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav d-none d-md-inline-flex" id="nav-btn-carrito" title="Ver Carrito de Compras">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="carrito-text">Carrito</span>
                 <span class="cart-badge">{{ total_items_carrito|default:'0' }}</span>
@@ -1371,5 +1421,7 @@
     });
     </script>
 
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

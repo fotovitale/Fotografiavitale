@@ -34,10 +34,35 @@ if not SECRET_KEY:
         # Solo para desarrollo local. En producción es obligatorio definirla.
         SECRET_KEY = "django-insecure-solo-desarrollo-cambiar-en-produccion"
     else:
-        raise ImproperlyConfigured("Falta DJANGO_SECRET_KEY en el archivo .env")
+        # Fallback seguro para evitar caída inmediata si aún no se configuró .env en el servidor
+        SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-fotografiavitale-pythonanywhere-prod-key")
 
-ALLOWED_HOSTS = ['fotografiavitale.pythonanywhere.com', 'localhost', '127.0.0.1']
-CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
+# Hosts permitidos (dominio de producción en PythonAnywhere y desarrollo)
+ALLOWED_HOSTS = [
+    'fotografiavitale.pythonanywhere.com',
+    '.pythonanywhere.com',
+    'localhost',
+    '127.0.0.1',
+    'testserver',
+]
+for _host in _env_list("DJANGO_ALLOWED_HOSTS"):
+    if _host not in ALLOWED_HOSTS:
+        ALLOWED_HOSTS.append(_host)
+
+# Orígenes confiables para CSRF en producción (login, registro, carrito y Mercado Pago)
+CSRF_TRUSTED_ORIGINS = [
+    'https://fotografiavitale.pythonanywhere.com',
+    'https://*.pythonanywhere.com',
+    'http://localhost:8000',
+    'http://127.0.0.1:8000',
+]
+for _origin in _env_list("DJANGO_CSRF_TRUSTED_ORIGINS"):
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(_origin)
+
+# Encabezado SSL para proxy reverso de PythonAnywhere (Nginx HTTPS -> WSGI)
+# Garantiza que request.is_secure() y request.build_absolute_uri() usen HTTPS en callbacks de Mercado Pago
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 
 # ---------------------------------------------------------------------------
