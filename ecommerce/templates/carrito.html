@@ -1,0 +1,1375 @@
+{% load static l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras y Checkout | Fotografía Vitale</title>
+    <meta name="description" content="Finalizá tu compra en Fotografía Vitale con Mercado Pago y Envíopack. Envíos a todo el país o retiro en local en San Martín, Mendoza.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'carrito' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+
+    <!-- Open Graph (OG Tags) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fotografía Vitale">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Carrito de Compras | Fotografía Vitale">
+    <meta property="og:description" content="Finalizá tu compra online en Fotografía Vitale con Mercado Pago y Envíopack.">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'carrito' %}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e32322;
+            --dark: #1a1a1a;
+            --light: #fff5d1;
+            --whatsapp: #25d366;
+            --mercadopago: #009ee3;
+            --gray-bg: #f8f9fa;
+            --card-border: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Micro-interacciones en botones y enlaces interactivos */
+        button:active, 
+        .btn-mercadopago-principal:active, 
+        .btn-whatsapp-secundario:active, 
+        .btn-catalog-cta:active, 
+        .btn-seguir-comprando:active, 
+        .btn-qty:active, 
+        .btn-cotizar:active,
+        .btn-carrito-nav:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* NAVBAR SUPERIOR CON BOTÓN DE CARRITO ANCLADO A LA DERECHA (SMART STICKY BLUR) */
+        header {
+            background-color: rgba(26, 26, 26, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-area img {
+            height: 44px;
+            border-radius: 8px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-right-container a.nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        .nav-right-container a.nav-link:hover {
+            color: var(--primary);
+        }
+
+        /* Botón de carrito anclado en esquina superior derecha */
+        .btn-carrito-nav {
+            background-color: var(--primary);
+            color: white !important;
+            text-decoration: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(227, 35, 34, 0.35);
+            transition: transform 0.15s, background-color 0.2s;
+            position: relative;
+        }
+
+        .btn-carrito-nav:hover {
+            background-color: #c01c1b;
+            transform: scale(1.04);
+        }
+
+        .cart-badge {
+            background: white;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 2px 7px;
+            border-radius: 12px;
+            margin-left: 2px;
+        }
+
+        .main-container {
+            max-width: 950px;
+            width: 92%;
+            margin: 35px auto;
+            flex: 1;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .page-title h2 {
+            font-size: 2rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 0.95rem;
+            margin-top: 4px;
+        }
+
+        .cart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 28px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--gray-bg);
+            color: var(--dark);
+        }
+
+        .section-header-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .section-header i {
+            color: var(--primary);
+        }
+
+        /* Tabla y lista de productos */
+        .items-list {
+            margin-bottom: 25px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--card-border);
+            gap: 15px;
+        }
+
+        .item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+            background: #eee;
+        }
+
+        .item-name {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .item-price-unit {
+            font-size: 0.85rem;
+            color: #777;
+        }
+
+        .item-qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-qty {
+            background: #f1f2f6;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark);
+        }
+
+        .btn-qty:hover {
+            background: #dfe4ea;
+        }
+
+        .item-subtotal {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--dark);
+            min-width: 90px;
+            text-align: right;
+        }
+
+        .btn-delete {
+            color: #e74c3c;
+            text-decoration: none;
+            font-size: 1.1rem;
+            padding: 4px 8px;
+        }
+
+        .empty-cart-box {
+            text-align: center;
+            padding: 50px 25px;
+            background: #ffffff;
+            border-radius: 16px;
+            border: 1px dashed #cbd5e1;
+            margin: 20px 0;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+        }
+
+        .empty-cart-icon-wrap {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            background: #fff0f0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(227, 35, 34, 0.12);
+        }
+
+        .empty-cart-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-cart-desc {
+            color: #64748b;
+            font-size: 0.96rem;
+            max-width: 440px;
+            margin: 0 auto 24px;
+            line-height: 1.55;
+        }
+
+        .btn-catalog-cta {
+            background: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.02rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(227, 35, 34, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-catalog-cta:hover {
+            background: #c01c1b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(227, 35, 34, 0.45);
+        }
+
+        .btn-seguir-comprando {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: var(--primary);
+            color: #ffffff !important;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 32px;
+            font-weight: 700;
+            font-size: 1.05rem;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 18px rgba(227, 35, 34, 0.38);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-seguir-comprando:hover {
+            background: #c01c1b;
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(227, 35, 34, 0.5);
+        }
+
+        .btn-vaciar-carrito {
+            font-size: 0.88rem;
+            color: #e74c3c;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-vaciar-carrito:hover {
+            background: #fdf2f2;
+        }
+
+        /* Formulario de Envío */
+        .shipping-form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .shipping-input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .shipping-input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--card-border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .shipping-input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-cotizar {
+            background-color: var(--dark);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-cotizar:hover {
+            background-color: #333;
+        }
+
+        /* Opciones de envío */
+        .shipping-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-item {
+            background: var(--gray-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+        }
+
+        .option-item:hover {
+            transform: translateX(4px);
+            border-color: var(--primary);
+            background: #fff9f6;
+        }
+
+        .option-item.selected {
+            border-color: var(--primary);
+            background: #fff5f0;
+            box-shadow: 0 4px 14px rgba(224, 86, 36, 0.15);
+        }
+
+        .option-item-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .shipping-radio {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+            cursor: pointer;
+            margin: 0;
+            flex-shrink: 0;
+        }
+
+        .option-carrier {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--dark);
+        }
+
+        .option-detail {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 3px;
+        }
+
+        .option-price {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* Formulario de Checkout */
+        .checkout-form-container {
+            margin-top: 25px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 14px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .form-group label .req {
+            color: var(--primary);
+        }
+
+        .form-group input {
+            padding: 12px 14px;
+            border: 2px solid var(--card-border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(227, 35, 34, 0.1);
+        }
+
+        .badge-modalidad {
+            font-size: 0.75rem;
+            padding: 3px 9px;
+            border-radius: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+            display: inline-block;
+        }
+
+        .badge-domicilio {
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .badge-sucursal {
+            background-color: #e8f8f5;
+            color: #16a085;
+            border: 1px solid #a3e4d7;
+        }
+
+        /* Resumen de totales */
+        .totals-summary {
+            background: var(--gray-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .totals-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .totals-row.final {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--dark);
+            border-top: 2px solid var(--card-border);
+            padding-top: 12px;
+            margin-top: 8px;
+        }
+
+        .totals-row.final .total-amount {
+            color: var(--primary);
+        }
+
+        /* ======================================================== */
+        /* ESTRUCTURA Y ORDEN DE BOTONES DE ACCIÓN                   */
+        /* 1. Botón Principal: Mercado Pago (Arriba)                 */
+        /* 2. Botón Secundario: WhatsApp (Justo debajo)              */
+        /* ======================================================== */
+        .checkout-actions-container {
+            margin-top: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        /* Botón Principal (Arriba): Mercado Pago */
+        .btn-mercadopago-principal {
+            background: linear-gradient(135deg, #009ee3 0%, #007ebb 100%);
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(0, 158, 227, 0.35);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-mercadopago-principal:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 158, 227, 0.45);
+        }
+
+        .btn-mercadopago-principal.btn-mp-disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+            opacity: 0.9;
+        }
+
+        .btn-mercadopago-principal.btn-mp-disabled:hover {
+            transform: none;
+            box-shadow: none;
+            background: #7f8c8d;
+        }
+
+        /* Botón Secundario (Justo debajo): WhatsApp */
+        .btn-whatsapp-secundario {
+            background-color: var(--whatsapp);
+            color: white;
+            text-decoration: none;
+            width: 100%;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.25);
+            transition: transform 0.2s, background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .btn-whatsapp-secundario:hover {
+            background-color: #1eb954;
+            transform: translateY(-2px);
+        }
+
+        .alert-info {
+            background-color: #e8f4fd;
+            border-left: 4px solid #1976d2;
+            color: #0d47a1;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: #aaa;
+            text-align: center;
+            padding: 25px 15px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 650px) {
+            .logo-area h1 { font-size: 1.05rem; }
+            .btn-carrito-nav span.carrito-text { display: none; }
+            .cart-card { padding: 18px; }
+            .item-row { flex-wrap: wrap; }
+            .item-subtotal { width: 100%; text-align: left; }
+            .btn-mercadopago-principal { font-size: 1.02rem; padding: 14px; }
+            .btn-whatsapp-secundario { font-size: 0.98rem; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MENÚ DE NAVEGACIÓN CON BOTÓN DE CARRITO ANCLADO A LA ESQUINA SUPERIOR DERECHA -->
+    <header>
+        <a href="{% url 'inicio' %}" class="logo-area">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <h1>Fotografía Vitale</h1>
+        </a>
+        <div class="nav-right-container">
+            <a href="{% url 'inicio' %}" class="nav-link">Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link">Catálogo</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'perfil' %}" class="nav-link" title="Mi Cuenta"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'logout' %}" class="nav-link" title="Cerrar sesión"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</a>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'carrito' %}" class="nav-link" title="Iniciar sesión"><i class="fa-solid fa-user"></i> Ingresar</a>
+            {% endif %}
+            <!-- Botón de Carrito anclado en esquina superior derecha -->
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav" id="nav-btn-carrito" title="Ver Carrito de Compras">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="carrito-text">Carrito</span>
+                <span class="cart-badge">{{ total_items_carrito|default:'0' }}</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="main-container">
+        <div class="page-title">
+            <h2><i class="fa-solid fa-bag-shopping"></i> Tu Carrito de Compras</h2>
+            <p>Revisá tus productos, cotizá tu envío y aboná de forma segura con Mercado Pago</p>
+        </div>
+
+        <div class="cart-card">
+            <div class="section-header">
+                <div class="section-header-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>Productos en el Carrito ({{ total_items_carrito|default:'0' }})</span>
+                </div>
+            </div>
+
+            {% if items_carrito %}
+                <div class="items-list">
+                    {% for item in items_carrito %}
+                        <div class="item-row">
+                            <div class="item-info">
+                                {% if item.producto.imagen %}
+                                    <img src="{{ item.producto.imagen.url }}" alt="{{ item.producto.nombre }}" class="item-img" loading="lazy">
+                                {% else %}
+                                    <img src="{% static 'logochico3.png' %}" alt="{{ item.producto.nombre }}" class="item-img" loading="lazy">
+                                {% endif %}
+                                <div>
+                                    <div class="item-name">
+                                        {{ item.producto.nombre }}
+                                        {% if item.producto.requiere_fotos %}
+                                            <span style="display: inline-flex; align-items: center; gap: 4px; background: #fff3cd; color: #856404; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 8px; border: 1px solid #ffeeba; margin-left: 6px; vertical-align: middle;">
+                                                <i class="fa-solid fa-camera"></i> Requiere fotos
+                                            </span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="item-price-unit">${{ item.precio_unitario|floatformat:0 }} c/u</div>
+                                </div>
+                            </div>
+                            <div class="item-qty-controls">
+                                <a href="{% url 'carrito' %}?remover={{ item.producto.id }}" class="btn-qty" title="Disminuir">-</a>
+                                <span style="font-weight: 600; min-width: 20px; text-align: center;">{{ item.cantidad }}</span>
+                                <a href="{% url 'carrito' %}?agregar={{ item.producto.id }}" class="btn-qty" title="Aumentar">+</a>
+                            </div>
+                            <div class="item-subtotal">
+                                ${{ item.subtotal|floatformat:0 }}
+                            </div>
+                            <a href="{% url 'carrito' %}?eliminar={{ item.producto.id }}" class="btn-delete" title="Quitar producto">
+                                <i class="fa-solid fa-xmark"></i>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Botón Seguir Comprando Centrado Horizontalmente y Destacado -->
+                <div class="cart-continue-wrapper" style="display: flex; justify-content: center; align-items: center; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--card-border); width: 100%;">
+                    <a href="{% url 'catalogo' %}" class="btn-seguir-comprando" id="btn-seguir-comprando">
+                        <i class="fa-solid fa-arrow-left"></i> Seguir agregando productos
+                    </a>
+                </div>
+
+                <!-- Vaciar carrito alineado a la derecha -->
+                <div style="display: flex; justify-content: flex-end; margin-top: 10px;">
+                    <a href="{% url 'carrito' %}?vaciar=1" class="btn-vaciar-carrito" title="Vaciar todo el carrito">
+                        <i class="fa-solid fa-trash-can"></i> Vaciar carrito
+                    </a>
+                </div>
+            {% else %}
+                <div class="empty-cart-box">
+                    <div class="empty-cart-icon-wrap">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <h3 class="empty-cart-title">¡Tu carrito está vacío!</h3>
+                    <p class="empty-cart-desc">
+                        Aún no has agregado productos a tu compra. Descubrí nuestro catálogo con promociones especiales, impresiones fotográficas y regalos personalizados.
+                    </p>
+                    <a href="{% url 'catalogo' %}" class="btn-catalog-cta">
+                        <i class="fa-solid fa-store"></i> Ir al Catálogo
+                    </a>
+                </div>
+            {% endif %}
+
+            <!-- OPCIONES DE ENTREGA -->
+            <div class="section-header" style="margin-top: 30px;">
+                <div class="section-header-title">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    <span>Modalidad y Opciones de Entrega</span>
+                </div>
+            </div>
+
+            <!-- 1. Opción Estática: Retiro por el Local (Gratis) -->
+            <div class="shipping-options" style="margin-top: 15px; margin-bottom: 20px;">
+                <div class="shipping-options-list">
+                    <label 
+                        class="option-item option-local {% if envio_modalidad == 'LOCAL' or envio_nombre == 'Retiro por el local' or not codigo_postal and not costo_envio_param %}selected{% endif %}"
+                        data-price="0"
+                        data-carrier="Retiro por el local"
+                        data-modalidad="LOCAL"
+                        title="Retirar gratis por nuestro local comercial"
+                    >
+                        <div class="option-item-left">
+                            <input 
+                                type="radio" 
+                                name="opcion_envio" 
+                                class="shipping-radio" 
+                                value="0"
+                                data-price="0"
+                                data-carrier="Retiro por el local"
+                                data-modalidad="LOCAL"
+                                {% if envio_modalidad == 'LOCAL' or envio_nombre == 'Retiro por el local' or not codigo_postal and not costo_envio_param %}checked{% endif %}
+                            >
+                            <div>
+                                <div class="option-carrier">
+                                    <i class="fa-solid fa-store" style="color: var(--primary);"></i> 
+                                    <strong>Retiro por el local</strong>
+                                    <span class="badge-modalidad" style="background-color: #e8f8f5; color: #16a085; font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 6px;">Gratis</span>
+                                </div>
+                                <div class="option-detail">
+                                    Retirá sin costo en nuestro local: <strong>9 de Julio 73, San Martín, Mendoza</strong> (Lun a Sáb)
+                                </div>
+                            </div>
+                        </div>
+                        <div class="option-price" data-price="0" style="color: #27ae60; font-weight: 700;">
+                            $0 (Gratis)
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 2. Cotizador de Envíos Envíopack (Domicilio / Sucursal de Correo) -->
+            <div style="background: #fafafa; border: 1px solid var(--card-border); border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+                <h4 style="font-size: 0.95rem; font-weight: 600; margin-bottom: 8px; color: var(--dark);">
+                    <i class="fa-solid fa-truck" style="color: #007ebb;"></i> ¿Preferís envío por correo (Andreani / Envíopack)?
+                </h4>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">
+                    Ingresá tu código postal para cotizar envío a domicilio o retiro en sucursal del correo:
+                </p>
+
+                <form method="GET" action="{% url 'carrito' %}" class="shipping-form" style="margin-bottom: 0;">
+                    <div class="shipping-input-group">
+                        <input 
+                            type="text" 
+                            name="codigo_postal" 
+                            id="codigo_postal" 
+                            placeholder="Ingresá tu Código Postal (ej: 5570, 1425)" 
+                            value="{{ codigo_postal|default:'' }}" 
+                        >
+                    </div>
+                    <button type="submit" class="btn-cotizar">
+                        <i class="fa-solid fa-calculator"></i> Cotizar Envío
+                    </button>
+                </form>
+
+                {% if codigo_postal %}
+                    <div class="shipping-options" id="shipping-options-section" style="margin-top: 15px;">
+                        <h4 style="margin-bottom: 12px; font-weight: 600; font-size: 0.95rem;">
+                            Opciones de correo para CP <strong>{{ codigo_postal }}</strong>:
+                        </h4>
+
+                        {% if opciones_envio %}
+                            {% if opciones_envio.items or opciones_envio|length > 0 %}
+                                <div class="shipping-options-list" id="shipping-options-list">
+                                    {% for opcion in opciones_envio %}
+                                        <label 
+                                            class="option-item {% if costo_envio and opcion.costo == costo_envio or opcion.valor == costo_envio or forloop.first and costo_envio_param %}selected{% endif %}"
+                                            data-price="{% if opcion.valor %}{{ opcion.valor|unlocalize }}{% elif opcion.costo %}{{ opcion.costo|unlocalize }}{% else %}0{% endif %}"
+                                            data-carrier="{{ opcion.correo.nombre|default:opcion.correo|default:'Envíopack' }}"
+                                            data-modalidad="{% if opcion.modalidad == 'S' or opcion.modalidad == 's' %}S{% else %}D{% endif %}"
+                                            title="Seleccionar esta opción de envío"
+                                        >
+                                            <div class="option-item-left">
+                                                <input 
+                                                    type="radio" 
+                                                    name="opcion_envio" 
+                                                    class="shipping-radio" 
+                                                    value="{% if opcion.valor %}{{ opcion.valor|unlocalize }}{% elif opcion.costo %}{{ opcion.costo|unlocalize }}{% else %}0{% endif %}"
+                                                    data-price="{% if opcion.valor %}{{ opcion.valor|unlocalize }}{% elif opcion.costo %}{{ opcion.costo|unlocalize }}{% else %}0{% endif %}"
+                                                    data-carrier="{{ opcion.correo.nombre|default:opcion.correo|default:'Envíopack' }}"
+                                                    data-modalidad="{% if opcion.modalidad == 'S' or opcion.modalidad == 's' %}S{% else %}D{% endif %}"
+                                                    {% if costo_envio and opcion.costo == costo_envio or opcion.valor == costo_envio or forloop.first and costo_envio_param %}checked{% endif %}
+                                                >
+                                                <div>
+                                                    <div class="option-carrier">
+                                                        <i class="fa-solid fa-box"></i> 
+                                                        {{ opcion.correo.nombre|default:opcion.correo }}
+                                                    </div>
+                                                    <div class="option-detail">
+                                                        Modalidad: 
+                                                        {% if opcion.modalidad == 'S' or opcion.modalidad == 's' %}
+                                                            Retiro en Sucursal
+                                                        {% elif opcion.modalidad == 'D' or opcion.modalidad == 'd' or opcion.modalidad == 'N' or opcion.modalidad == 'n' %}
+                                                            Envío a Domicilio
+                                                        {% elif opcion.modalidad %}
+                                                            {{ opcion.modalidad }}
+                                                        {% else %}
+                                                            Envío a Domicilio
+                                                        {% endif %}
+                                                        {% if opcion.horas_entrega %}
+                                                            - Llega en {% widthratio opcion.horas_entrega 24 1 %} días hábiles
+                                                        {% elif opcion.dias_entrega %}
+                                                            - Llega en {{ opcion.dias_entrega }} días hábiles
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="option-price" data-price="{% if opcion.valor %}{{ opcion.valor|unlocalize }}{% elif opcion.costo %}{{ opcion.costo|unlocalize }}{% else %}0{% endif %}">
+                                                {% if opcion.valor %}${{ opcion.valor|floatformat:0 }}{% elif opcion.costo %}${{ opcion.costo|floatformat:0 }}{% else %}Consultar{% endif %}
+                                            </div>
+                                        </label>
+                                    {% empty %}
+                                        <div class="alert-info">
+                                            <i class="fa-solid fa-circle-info"></i> {{ opciones_envio }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div class="alert-info">
+                                    <i class="fa-solid fa-circle-info"></i> No se encontraron opciones para el código postal ingresado.
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div class="alert-warning">
+                                <i class="fa-solid fa-triangle-exclamation"></i> No se pudo obtener cotización para el código postal <strong>{{ codigo_postal }}</strong>. Verificá que sea válido o consultanos por WhatsApp.
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- FORMULARIO DE CHECKOUT / DATOS DE CONTACTO Y ENVÍO -->
+            <form id="checkout-form" method="POST" action="{% url 'checkout' %}">
+                {% csrf_token %}
+                <input type="hidden" name="codigo_postal" id="form-codigo-postal" value="{{ codigo_postal|default:'' }}">
+                <input type="hidden" name="costo_envio" id="form-costo-envio" value="{% if costo_envio %}{{ costo_envio|unlocalize }}{% else %}0{% endif %}">
+                <input type="hidden" name="envio_nombre" id="form-envio-nombre" value="{{ envio_nombre|default:'Retiro por el local' }}">
+                <input type="hidden" name="envio_modalidad" id="form-envio-modalidad" value="{% if envio_modalidad %}{{ envio_modalidad }}{% else %}LOCAL{% endif %}">
+
+                <div class="checkout-form-container">
+                    <!-- SECCIÓN 1: DATOS DE CONTACTO -->
+                    <div class="section-header" style="margin-top: 30px;">
+                        <div class="section-header-title">
+                            <i class="fa-solid fa-user-check"></i>
+                            <span>1. Datos de Contacto</span>
+                        </div>
+                    </div>
+
+                    {% if request.user.is_authenticated %}
+                        <div style="font-size: 0.85rem; color: #2e7d32; background: #e8f5e9; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; border: 1px solid #c8e6c9;">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>Comprando como <strong>{{ request.user.email }}</strong> (Datos autocompletados con tu cuenta)</span>
+                        </div>
+                    {% else %}
+                        <div style="font-size: 0.85rem; color: #64748b; background: #f8fafc; padding: 10px 14px; border-radius: 8px; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; border: 1px solid #e2e8f0;">
+                            <i class="fa-solid fa-user-circle" style="color: var(--primary);"></i>
+                            <span>¿Ya tenés cuenta? <a href="{% url 'login' %}?next={% url 'carrito' %}" style="color: var(--primary); font-weight: 600; text-decoration: underline;">Iniciá sesión aquí</a> para autocompletar tus datos.</span>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label for="checkout-nombre">Nombre <span class="req">*</span></label>
+                            <input type="text" name="nombre" id="checkout-nombre" placeholder="Tu nombre" value="{% if request.user.is_authenticated %}{{ request.user.first_name|default:request.user.username }}{% endif %}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-apellido">Apellido <span class="req">*</span></label>
+                            <input type="text" name="apellido" id="checkout-apellido" placeholder="Tu apellido" value="{% if request.user.is_authenticated %}{{ request.user.last_name }}{% endif %}" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-top: 14px;">
+                        <div class="form-group">
+                            <label for="checkout-email">Email <span class="req">*</span></label>
+                            <input type="email" name="email" id="checkout-email" placeholder="ejemplo@correo.com" value="{% if request.user.is_authenticated %}{{ request.user.email }}{% endif %}" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-telefono">Teléfono / WhatsApp <span class="req">*</span></label>
+                            <input type="tel" name="telefono" id="checkout-telefono" placeholder="Ej: 261 456 7890" required>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 2: DATOS DE ENTREGA -->
+                    <div class="section-header" style="margin-top: 30px;">
+                        <div class="section-header-title">
+                            <i class="fa-solid fa-location-dot"></i>
+                            <span>2. Dirección de Entrega</span>
+                            <span id="badge-modalidad" class="badge-modalidad badge-sucursal">Retiro por el local (Dirección no requerida)</span>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label for="checkout-calle">Calle <span class="req-address req">*</span></label>
+                            <input type="text" name="calle" id="checkout-calle" class="req-address-input" placeholder="Nombre de la calle">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-numero">Número <span class="req-address req">*</span></label>
+                            <input type="text" name="numero" id="checkout-numero" class="req-address-input" placeholder="Ej: 1234">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2" style="margin-top: 14px;">
+                        <div class="form-group">
+                            <label for="checkout-piso">Piso / Depto / Referencias (Opcional)</label>
+                            <input type="text" name="piso_depto" id="checkout-piso" placeholder="Ej: Piso 2 Depto B">
+                        </div>
+                        <div class="form-group">
+                            <label for="checkout-localidad">Localidad / Ciudad <span class="req-address req">*</span></label>
+                            <input type="text" name="localidad" id="checkout-localidad" class="req-address-input" placeholder="Ej: San Martín, Mendoza">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RESUMEN DE TOTALES -->
+                <div class="totals-summary" id="resumen-totales" data-subtotal="{{ subtotal_productos|unlocalize }}">
+                    <div class="totals-row">
+                        <span>Subtotal de productos:</span>
+                        <span id="resumen-subtotal">${{ subtotal_productos|floatformat:0 }}</span>
+                    </div>
+                    <div class="totals-row">
+                        <span>Costo de envío <span id="resumen-envio-nombre">{% if envio_nombre %}({{ envio_nombre }}){% endif %}</span>:</span>
+                        <span id="resumen-envio-costo">
+                            {% if costo_envio > 0 %}
+                                ${{ costo_envio|floatformat:0 }}
+                            {% elif envio_nombre == 'Retiro por el local' or envio_modalidad == 'LOCAL' %}
+                                $0 (Gratis)
+                            {% elif codigo_postal %}
+                                A coordinar / $0
+                            {% else %}
+                                $0 (Retiro por el local)
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="totals-row final">
+                        <span>Total a pagar:</span>
+                        <span class="total-amount" id="resumen-total-final">${{ total_con_envio|floatformat:0 }}</span>
+                    </div>
+                </div>
+
+                <!-- ======================================================== -->
+                <!-- ORDEN DE BOTONES DE ACCIÓN:                               -->
+                <!-- 1. Botón Principal (arriba): Finalizar Compra Mercado Pago-->
+                <!-- 2. Botón Secundario (justo debajo): Consultar WhatsApp   -->
+                <!-- ======================================================== -->
+                <div class="checkout-actions-container">
+                    <!-- 1. BOTÓN PRINCIPAL (SUBMIT DE CHECKOUT) -->
+                    {% if items_carrito %}
+                        <button type="submit" class="btn-mercadopago-principal" id="btn-mp-checkout">
+                            <i class="fa-regular fa-credit-card"></i> Finalizar Compra con Mercado Pago
+                        </button>
+                    {% else %}
+                        <a href="{% url 'catalogo' %}" class="btn-mercadopago-principal btn-mp-disabled" style="cursor: pointer;">
+                            <i class="fa-solid fa-store"></i> Añadir productos para comprar
+                        </a>
+                    {% endif %}
+
+                    <!-- 2. BOTÓN SECUNDARIO (JUSTO DEBAJO) -->
+                    <a href="https://wa.me/{{ numero_wsp }}?text={{ mensaje_wsp|urlencode }}" class="btn-whatsapp-secundario" id="btn-whatsapp-checkout" target="_blank">
+                        <i class="fa-brands fa-whatsapp"></i> Consultar por WhatsApp
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; Fotografía Vitale - San Martín, Mendoza. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const resumenTotales = document.getElementById("resumen-totales");
+        if (!resumenTotales) return;
+
+        // Parser seguro contra NaN para cualquier formato numérico (comas, puntos, etc.)
+        function parseMonto(val) {
+            if (val === null || val === undefined || val === "") return 0;
+            let str = String(val).trim().replace(/[$\s]/g, "");
+            if (str.includes(",") && str.includes(".")) {
+                str = str.replace(/\./g, "").replace(",", ".");
+            } else if (str.includes(",")) {
+                str = str.replace(",", ".");
+            }
+            const num = parseFloat(str);
+            return isNaN(num) ? 0 : num;
+        }
+
+        // Formateador en moneda argentina sin centavos ($3.500)
+        function formatearPesos(monto) {
+            const entero = Math.round(monto);
+            return "$" + entero.toLocaleString("es-AR");
+        }
+
+        const subtotal = parseMonto(resumenTotales.dataset.subtotal);
+        const envioCostoEl = document.getElementById("resumen-envio-costo");
+        const envioNombreEl = document.getElementById("resumen-envio-nombre");
+        const totalFinalEl = document.getElementById("resumen-total-final");
+        const btnMpCheckout = document.getElementById("btn-mp-checkout");
+        const btnWhatsapp = document.getElementById("btn-whatsapp-checkout") || document.querySelector(".btn-whatsapp-secundario");
+        const codigoPostalInput = document.getElementById("codigo_postal");
+
+        const formCp = document.getElementById("form-codigo-postal");
+        const formCosto = document.getElementById("form-costo-envio");
+        const formNombre = document.getElementById("form-envio-nombre");
+        const formModalidad = document.getElementById("form-envio-modalidad");
+        const badgeModalidad = document.getElementById("badge-modalidad");
+        const addressInputs = document.querySelectorAll(".req-address-input");
+        const addressStars = document.querySelectorAll(".req-address");
+        const checkoutForm = document.getElementById("checkout-form");
+
+        function aplicarModalidadEnvio(modalidad) {
+            const esRetiroLocal = (modalidad === "LOCAL" || modalidad === "local" || modalidad === "L");
+            const esSucursal = (modalidad === "S" || modalidad === "s");
+
+            if (formModalidad) formModalidad.value = esRetiroLocal ? "LOCAL" : (esSucursal ? "S" : "D");
+
+            if (esRetiroLocal) {
+                if (badgeModalidad) {
+                    badgeModalidad.textContent = "Retiro por el local (Dirección no requerida)";
+                    badgeModalidad.className = "badge-modalidad badge-sucursal";
+                }
+                addressInputs.forEach(inp => inp.required = false);
+                addressStars.forEach(st => st.style.display = "none");
+            } else if (esSucursal) {
+                if (badgeModalidad) {
+                    badgeModalidad.textContent = "Retiro en Sucursal (Dirección opcional)";
+                    badgeModalidad.className = "badge-modalidad badge-sucursal";
+                }
+                addressInputs.forEach(inp => inp.required = false);
+                addressStars.forEach(st => st.style.display = "none");
+            } else {
+                if (badgeModalidad) {
+                    badgeModalidad.textContent = "Envío a Domicilio (Obligatorio)";
+                    badgeModalidad.className = "badge-modalidad badge-domicilio";
+                }
+                addressInputs.forEach(inp => inp.required = true);
+                addressStars.forEach(st => st.style.display = "inline");
+            }
+        }
+
+        function actualizarOpcionEnvio(card, radio) {
+            if (!card) return;
+
+            const allShippingCards = document.querySelectorAll(".option-item");
+            const allShippingRadios = document.querySelectorAll(".shipping-radio");
+
+            // 1. Marcar estado activo visual en tarjetas y radios
+            allShippingCards.forEach(c => c.classList.remove("selected"));
+            card.classList.add("selected");
+
+            allShippingRadios.forEach(r => {
+                if (r !== radio) r.checked = false;
+            });
+            if (radio && !radio.checked) {
+                radio.checked = true;
+            }
+
+            // 2. Extraer costo, nombre y modalidad desde data attributes
+            const costoAttr = card.getAttribute("data-price") || (radio ? radio.getAttribute("data-price") : "0");
+            const carrierNombre = card.getAttribute("data-carrier") || (radio ? radio.getAttribute("data-carrier") : "Retiro por el local");
+            const modalidad = card.getAttribute("data-modalidad") || (radio ? radio.getAttribute("data-modalidad") : "LOCAL");
+            const costoEnvio = parseMonto(costoAttr);
+
+            // Actualizar campos ocultos del formulario
+            if (formCosto) formCosto.value = costoEnvio.toString();
+            if (formNombre) formNombre.value = carrierNombre;
+            if (formCp && codigoPostalInput && codigoPostalInput.value) {
+                formCp.value = codigoPostalInput.value.trim();
+            }
+
+            // 3. Ajustar obligatoriedad de la dirección según la modalidad
+            aplicarModalidadEnvio(modalidad);
+
+            // 4. Cálculo en tiempo real sin NaN ni borrados
+            const nuevoTotal = subtotal + costoEnvio;
+
+            if (envioCostoEl) {
+                if (costoEnvio > 0) {
+                    envioCostoEl.textContent = formatearPesos(costoEnvio);
+                } else if (modalidad === "LOCAL") {
+                    envioCostoEl.textContent = "$0 (Gratis)";
+                } else {
+                    envioCostoEl.textContent = "$0";
+                }
+            }
+            if (envioNombreEl) {
+                envioNombreEl.textContent = carrierNombre ? `(${carrierNombre})` : "";
+            }
+            if (totalFinalEl) {
+                totalFinalEl.textContent = formatearPesos(nuevoTotal);
+                totalFinalEl.style.transition = "transform 0.15s ease";
+                totalFinalEl.style.transform = "scale(1.06)";
+                setTimeout(() => {
+                    totalFinalEl.style.transform = "scale(1)";
+                }, 180);
+            }
+
+            // 5. Envío al backend mediante fetch para sincronizar WhatsApp (si hay CP)
+            const cpVal = codigoPostalInput ? codigoPostalInput.value.trim() : "";
+            if (cpVal) {
+                const params = new URLSearchParams({
+                    codigo_postal: cpVal,
+                    costo_envio: costoEnvio.toString(),
+                    envio_nombre: carrierNombre
+                });
+
+                fetch(`{% url 'carrito' %}?${params.toString()}`, {
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) throw new Error("HTTP error " + res.status);
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.status === "ok") {
+                        if (data.mensaje_wsp && data.numero_wsp && btnWhatsapp) {
+                            btnWhatsapp.href = `https://wa.me/${data.numero_wsp}?text=${encodeURIComponent(data.mensaje_wsp)}`;
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.warn("Sincronización con backend:", err);
+                });
+            }
+        }
+
+        // Asignar listeners en todas las opciones de envío (Retiro local + Envíopack)
+        function vincularEventosEnvio() {
+            const allShippingCards = document.querySelectorAll(".option-item");
+            const allShippingRadios = document.querySelectorAll(".shipping-radio");
+
+            allShippingCards.forEach(card => {
+                card.onclick = function () {
+                    const radio = this.querySelector(".shipping-radio");
+                    actualizarOpcionEnvio(this, radio);
+                };
+            });
+
+            allShippingRadios.forEach(radio => {
+                radio.onchange = function () {
+                    const card = this.closest(".option-item");
+                    actualizarOpcionEnvio(card, this);
+                };
+            });
+        }
+        vincularEventosEnvio();
+
+        // Configuración inicial de modalidad según la opción seleccionada
+        const opcionInicial = document.querySelector(".option-item.selected");
+        if (opcionInicial) {
+            const modInicial = opcionInicial.getAttribute("data-modalidad") || "LOCAL";
+            aplicarModalidadEnvio(modInicial);
+        } else {
+            aplicarModalidadEnvio("LOCAL");
+        }
+
+        // Recuperar estado del botón si el usuario regresa con el historial del navegador (Back button / BFCache)
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (btnMpCheckout && btnMpCheckout.disabled)) {
+                if (btnMpCheckout) {
+                    btnMpCheckout.disabled = false;
+                    btnMpCheckout.innerHTML = '<i class="fa-regular fa-credit-card"></i> Finalizar Compra con Mercado Pago';
+                }
+            }
+        });
+
+        // Manejo del formulario de Checkout
+        if (checkoutForm) {
+            checkoutForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                // Sincronizar inputs ocultos
+                if (codigoPostalInput && formCp && codigoPostalInput.value) {
+                    formCp.value = codigoPostalInput.value.trim();
+                }
+
+                // Estado de carga en el botón
+                if (btnMpCheckout) {
+                    btnMpCheckout.disabled = true;
+                    btnMpCheckout.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando pedido y pago...';
+                }
+
+                const formData = new FormData(checkoutForm);
+
+                fetch("{% url 'checkout' %}", {
+                    method: "POST",
+                    body: formData,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json"
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === "ok" && data.init_point) {
+                        // Redirigir directamente a Mercado Pago
+                        window.location.href = data.init_point;
+                    } else {
+                        alert(data.message || "Error al procesar el pedido. Por favor revisá los datos ingresados.");
+                        if (btnMpCheckout) {
+                            btnMpCheckout.disabled = false;
+                            btnMpCheckout.innerHTML = '<i class="fa-regular fa-credit-card"></i> Finalizar Compra con Mercado Pago';
+                        }
+                    }
+                })
+                .catch(err => {
+                    console.error("Error en fetch checkout, enviando formulario estándar:", err);
+                    checkoutForm.submit();
+                });
+            });
+        }
+    });
+    </script>
+
+</body>
+</html>

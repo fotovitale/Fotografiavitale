@@ -1,0 +1,950 @@
+{% load static l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡Pago Exitoso! | Fotografía Vitale</title>
+    <meta name="description" content="Confirmación de compra exitosa en Fotografía Vitale. Recibimos tu pago y estamos preparando tu pedido.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'pago_exitoso' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e32322;
+            --dark: #1a1a1a;
+            --light: #fff5d1;
+            --whatsapp: #25d366;
+            --success: #28a745;
+            --card-border: #e9ecef;
+            --gray-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Micro-interacciones en botones */
+        button:active, .btn-action-primary:active, .btn-action-secondary:active, .btn-home:active, .btn-carrito-nav:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* HEADER SUPERIOR CON BLUR STICKY */
+        header {
+            background-color: rgba(26, 26, 26, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-area img {
+            height: 44px;
+            border-radius: 8px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .container {
+            max-width: 860px;
+            margin: 35px auto 50px auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+
+        /* TARJETA DE CONFIRMACIÓN */
+        .success-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--card-border);
+            overflow: hidden;
+        }
+
+        .success-header {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 35px 25px;
+            text-align: center;
+        }
+
+        .success-icon-wrap {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            animation: pulseSuccess 2s infinite;
+        }
+
+        .success-icon-wrap i {
+            font-size: 2.8rem;
+            color: white;
+        }
+
+        @keyframes pulseSuccess {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.06); }
+            100% { transform: scale(1); }
+        }
+
+        .success-header h2 {
+            font-size: 1.7rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            letter-spacing: -0.5px;
+        }
+
+        .success-header p {
+            font-size: 1rem;
+            opacity: 0.95;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        /* CUERPO DEL DETALLE */
+        .success-body {
+            padding: 30px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid #f1f2f6;
+            padding-bottom: 8px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 600px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+        }
+
+        .info-box {
+            background: #fdfdfd;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+            padding: 16px;
+        }
+
+        .info-box p {
+            font-size: 0.88rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .info-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-box strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .badge-pagado {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* TABLA DE PRODUCTOS */
+        .tabla-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        .tabla-items th {
+            background: #f8f9fa;
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 0.82rem;
+            color: #718096;
+            text-transform: uppercase;
+            font-weight: 600;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .tabla-items td {
+            padding: 12px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #edf2f7;
+            color: #2d3748;
+        }
+
+        .tabla-items td.num {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .tabla-items th.num {
+            text-align: right;
+        }
+
+        .totales-box {
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 26px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.92rem;
+            color: #4a5568;
+            margin-bottom: 8px;
+        }
+
+        .total-row.destacado {
+            border-top: 2px dashed #cbd5e0;
+            margin-top: 12px;
+            padding-top: 12px;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .total-row.destacado span:last-child {
+            color: var(--primary);
+        }
+
+        /* BANNER DE ÉXITO DESTACADO */
+        .alert-success-banner {
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border: 1.5px solid #a5d6a7;
+            border-left: 6px solid #28a745;
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 26px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.08);
+            animation: fadeInSlide 0.4s ease-out;
+        }
+
+        /* BANNER INELUDIBLE REQUIERE FOTOS (AMARILLO / NARANJA) */
+        .alert-photos-banner {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 2px solid #ffd54f;
+            border-left: 6px solid #ff9800;
+            border-radius: 12px;
+            padding: 22px 24px;
+            margin-bottom: 26px;
+            box-shadow: 0 4px 16px rgba(255, 152, 0, 0.15);
+            animation: pulseAlertPhotos 2.5s infinite;
+        }
+
+        @keyframes pulseAlertPhotos {
+            0% { box-shadow: 0 4px 16px rgba(255, 152, 0, 0.15); }
+            50% { box-shadow: 0 8px 24px rgba(255, 152, 0, 0.32); }
+            100% { box-shadow: 0 4px 16px rgba(255, 152, 0, 0.15); }
+        }
+
+        .photos-banner-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .photos-banner-icon {
+            width: 52px;
+            height: 52px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.35);
+        }
+
+        .photos-banner-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #e65100;
+            line-height: 1.35;
+            margin-bottom: 6px;
+        }
+
+        .photos-banner-desc {
+            font-size: 0.92rem;
+            color: #795548;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .btn-send-photos {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: var(--whatsapp);
+            color: white;
+            font-weight: 700;
+            font-size: 1rem;
+            padding: 13px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-send-photos:hover {
+            background-color: #20ba5a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 211, 102, 0.45);
+        }
+
+        .item-badge-foto {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid #ffeeba;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes fadeInSlide {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .banner-icon-circle {
+            width: 50px;
+            height: 50px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.25);
+        }
+
+        .banner-text-col {
+            flex: 1;
+        }
+
+        .banner-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #155724;
+            margin-bottom: 4px;
+            line-height: 1.35;
+        }
+
+        .banner-subtitle {
+            font-size: 0.9rem;
+            color: #2e7d32;
+            margin: 0;
+            line-height: 1.45;
+        }
+
+        @media (max-width: 600px) {
+            .alert-success-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 16px;
+            }
+        }
+
+        /* SECCIÓN DE AYUDA Y SOPORTE POSVENTA */
+        .support-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 26px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--whatsapp) 0%, #20c997 50%, #0d6efd 100%);
+        }
+
+        .support-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        .support-badge {
+            width: 44px;
+            height: 44px;
+            background: #f0f7ff;
+            color: #0d6efd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+            border: 1px solid #d0e2ff;
+        }
+
+        .support-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .support-intro {
+            font-size: 0.92rem;
+            color: #4a5568;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .support-inline-email {
+            color: #0d6efd;
+            font-weight: 600;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            transition: color 0.2s;
+        }
+
+        .support-inline-email:hover {
+            color: #0b5ed7;
+        }
+
+        .support-channels-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        @media (max-width: 680px) {
+            .support-channels-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .support-channel-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .support-channel-card:hover {
+            background: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+        }
+
+        .support-channel-card.wsp-channel:hover {
+            border-color: rgba(37, 211, 102, 0.45);
+        }
+
+        .support-channel-card.email-channel:hover {
+            border-color: rgba(13, 110, 253, 0.45);
+        }
+
+        .channel-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .wsp-icon {
+            background: #e8f9ee;
+            color: var(--whatsapp);
+        }
+
+        .email-icon {
+            background: #eff6ff;
+            color: #0d6efd;
+        }
+
+        .channel-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            min-width: 0;
+        }
+
+        .channel-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+        }
+
+        .channel-headline {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--dark);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .channel-sub {
+            font-size: 0.78rem;
+            color: #64748b;
+        }
+
+        .channel-arrow {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            transition: transform 0.2s;
+        }
+
+        .support-channel-card:hover .channel-arrow {
+            transform: translateX(3px);
+            color: var(--dark);
+        }
+
+        .support-guarantee-note {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #64748b;
+            padding-top: 10px;
+            border-top: 1px dashed #e2e8f0;
+        }
+
+        .support-guarantee-note i {
+            color: #28a745;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .actions-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn-wsp {
+            background-color: var(--whatsapp);
+            color: white;
+        }
+
+        .btn-wsp:hover {
+            background-color: #20ba5a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.35);
+        }
+
+        .btn-tienda {
+            background-color: var(--dark);
+            color: white;
+        }
+
+        .btn-tienda:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+        }
+
+        /* PIE DE PÁGINA */
+        footer {
+            margin-top: auto;
+            background-color: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 18px 20px;
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: #ccc;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'inicio' %}" class="logo-area">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <h1>Fotografía Vitale</h1>
+        </a>
+        <div class="nav-right-container">
+            <a href="{% url 'inicio' %}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'perfil' %}" class="nav-link"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'logout' %}" class="nav-link"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="nav-link"><i class="fa-solid fa-user"></i> Ingresar</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="success-card">
+            <div class="success-header">
+                <div class="success-icon-wrap">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2>¡Pago Aprobado y Confirmado!</h2>
+                <p>Tu operación se procesó con éxito. El inventario ha sido actualizado y tu pedido está en preparación.</p>
+            </div>
+
+            <div class="success-body">
+                <!-- BANNER DE ÉXITO DESTACADO -->
+                <div class="alert-success-banner" role="alert">
+                    <div class="banner-icon-circle">
+                        <i class="fa-solid fa-circle-check"></i>
+                    </div>
+                    <div class="banner-text-col">
+                        <h3 class="banner-title">¡Tu pago fue exitoso y tus datos se cargaron correctamente!</h3>
+                        <p class="banner-subtitle">
+                            Tu compra quedó confirmada y registrada en nuestro sistema. El stock ha sido reservado y los datos de contacto y entrega fueron guardados con éxito.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- BANNER DESTACADO SI REQUIERE FOTOS -->
+                {% if pedido and pedido.necesita_fotos or pedido and pedido.requiere_fotos %}
+                    <div class="alert-photos-banner" role="alert">
+                        <div class="photos-banner-top">
+                            <div class="photos-banner-icon">
+                                <i class="fa-solid fa-camera-retro"></i>
+                            </div>
+                            <div>
+                                <h4 class="photos-banner-title">
+                                    ¡ATENCIÓN! Tu pedido requiere que nos envíes las imágenes para poder procesarlo.
+                                </h4>
+                                <p class="photos-banner-desc">
+                                    Tu compra incluye productos personalizados con fotos. Hacé clic en el siguiente botón para enviarnos tus imágenes directamente por WhatsApp con los datos de tu pedido ya cargados:
+                                </p>
+                            </div>
+                        </div>
+                        <a href="https://wa.me/{{ numero_wsp }}?text=Hola%20Fotograf%C3%ADa%20Vitale%2C%20soy%20del%20pedido%20%23{{ pedido.id }}.%20Ac%C3%A1%20env%C3%ADo%20las%20fotos%20para%20mi%20compra." 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="btn-send-photos">
+                            <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i>
+                            <span>Enviar fotos por WhatsApp (Pedido #{{ pedido.id }})</span>
+                        </a>
+                    </div>
+                {% endif %}
+
+                {% if pedido %}
+                    <div class="info-grid">
+                        <div class="info-box">
+                            <div class="section-title">
+                                <i class="fa-solid fa-receipt" style="color: var(--primary);"></i>
+                                <span>Información del Pedido</span>
+                            </div>
+                            <p><strong>Pedido:</strong> #{{ pedido.id }} ({{ pedido.codigo|stringformat:".8s"|upper }})</p>
+                            <p><strong>Estado:</strong> <span class="badge-pagado"><i class="fa-solid fa-circle-check"></i> Pagado</span></p>
+                            <p><strong>Fecha:</strong> {{ pedido.actualizado|date:"d/m/Y H:i" }}</p>
+                            {% if payment_id %}
+                                <p><strong>Transacción MP:</strong> {{ payment_id }}</p>
+                            {% elif pedido.mp_preference_id %}
+                                <p><strong>Referencia MP:</strong> {{ pedido.mp_preference_id }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div class="info-box">
+                            <div class="section-title">
+                                <i class="fa-solid fa-truck" style="color: var(--primary);"></i>
+                                <span>Entrega y Contacto</span>
+                            </div>
+                            <p><strong>Comprador:</strong> {{ pedido.nombre_completo }}</p>
+                            <p><strong>Email:</strong> {{ pedido.email }}</p>
+                            <p><strong>Teléfono:</strong> {{ pedido.telefono }}</p>
+                            <p><strong>Modalidad:</strong> 
+                                {% if pedido.envio_modalidad == 'LOCAL' or 'local' in pedido.envio_nombre|lower %}
+                                    Retiro por el local (9 de Julio 73, San Martín, Mendoza)
+                                {% elif pedido.envio_modalidad == 'S' %}
+                                    Retiro en Sucursal ({{ pedido.envio_nombre|default:"Transporte" }})
+                                {% else %}
+                                    Envío a Domicilio ({{ pedido.envio_nombre|default:"Envíopack" }})
+                                {% endif %}
+                            </p>
+                            {% if pedido.calle %}
+                                <p><strong>Dirección:</strong> {{ pedido.calle }} {{ pedido.numero }}{% if pedido.piso_depto %}, {{ pedido.piso_depto }}{% endif %}, {{ pedido.localidad }} (CP {{ pedido.codigo_postal }})</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="section-title">
+                        <i class="fa-solid fa-cart-shopping" style="color: var(--primary);"></i>
+                        <span>Productos del Pedido</span>
+                    </div>
+
+                    <table class="tabla-items">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="num">Cant.</th>
+                                <th class="num">Precio Unit.</th>
+                                <th class="num">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ item.nombre_producto }}</strong>
+                                        {% if item.producto and item.producto.requiere_fotos %}
+                                            <span class="item-badge-foto" title="Requiere fotos para personalizar">
+                                                <i class="fa-solid fa-camera"></i> Requiere fotos
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="num">{{ item.cantidad }}</td>
+                                    <td class="num">${{ item.precio_unitario|floatformat:0 }}</td>
+                                    <td class="num">${{ item.subtotal|floatformat:0 }}</td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: #888;">Detalle procesado correctamente.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <div class="totales-box">
+                        <div class="total-row">
+                            <span>Subtotal productos:</span>
+                            <span>${{ pedido.subtotal|floatformat:0 }}</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Costo de envío ({{ pedido.envio_nombre|default:"Transporte" }}):</span>
+                            <span>${{ pedido.costo_envio|floatformat:0 }}</span>
+                        </div>
+                        <div class="total-row destacado">
+                            <span>Total Abonado:</span>
+                            <span>${{ pedido.total|floatformat:0 }} ARS</span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="info-box" style="margin-bottom: 25px; text-align: center; padding: 25px;">
+                        <p style="font-size: 1.05rem; color: #2d3748;">
+                            Tu pago fue recibido correctamente. El comprobante de la operación fue enviado a tu correo electrónico registrado en Mercado Pago.
+                        </p>
+                    </div>
+                {% endif %}
+
+                <!-- SECCIÓN DE AYUDA Y SOPORTE POSVENTA -->
+                <div class="support-card">
+                    <div class="support-header">
+                        <div class="support-badge">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <h3 class="support-title">¿Necesitás ayuda con tu compra?</h3>
+                            <p class="support-intro">
+                                Ante cualquier inconveniente o duda con tu pedido, comunicate con nosotros a nuestro WhatsApp o escribinos a <a href="mailto:fotografiavitale.fv@gmail.com" class="support-inline-email">fotografiavitale.fv@gmail.com</a>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="support-channels-grid">
+                        <a href="https://wa.me/{{ numero_wsp }}?text={% if pedido %}Hola!%20Tengo%20una%20consulta%20sobre%20mi%20pedido%20%23{{ pedido.id }}%20({{ pedido.codigo|stringformat:'.8s'|upper }}).{% else %}Hola!%20Tengo%20una%20consulta%20sobre%20mi%20pago.{% endif %}" 
+                           target="_blank" 
+                           rel="noopener noreferrer" 
+                           class="support-channel-card wsp-channel">
+                            <div class="channel-icon-wrap wsp-icon">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <div class="channel-details">
+                                <span class="channel-tag">Canal rápido</span>
+                                <strong class="channel-headline">WhatsApp Directo</strong>
+                                <span class="channel-sub">Atención personalizada y seguimiento</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right channel-arrow"></i>
+                        </a>
+
+                        <a href="mailto:fotografiavitale.fv@gmail.com?subject=Consulta%20Pedido%20{% if pedido %}%23{{ pedido.id }}%20({{ pedido.codigo|stringformat:'.8s'|upper }}){% endif %}" 
+                           class="support-channel-card email-channel">
+                            <div class="channel-icon-wrap email-icon">
+                                <i class="fa-regular fa-envelope"></i>
+                            </div>
+                            <div class="channel-details">
+                                <span class="channel-tag">Correo oficial</span>
+                                <strong class="channel-headline">fotografiavitale.fv@gmail.com</strong>
+                                <span class="channel-sub">Escribinos tu consulta en cualquier momento</span>
+                            </div>
+                            <i class="fa-solid fa-chevron-right channel-arrow"></i>
+                        </a>
+                    </div>
+
+                    <div class="support-guarantee-note">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Compra protegida y garantizada por Fotografía Vitale - San Martín, Mendoza.</span>
+                    </div>
+                </div>
+
+                <div class="actions-group">
+                    <a href="https://wa.me/{{ numero_wsp }}?text={% if pedido %}Hola!%20Acabo%20de%20realizar%20el%20pago%20aprobado%20del%20pedido%20%23{{ pedido.id }}%20({{ pedido.codigo|stringformat:'.8s'|upper }})%20por%20Mercado%20Pago.%20Quería%20confirmar%20el%20envío.{% else %}Hola!%20Acabo%20de%20realizar%20un%20pago%20aprobado%20en%20Fotografía%20Vitale.{% endif %}" target="_blank" rel="noopener noreferrer" class="btn-action btn-wsp">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+                        <span>Consultar seguimiento por WhatsApp</span>
+                    </a>
+                    <a href="{% url 'catalogo' %}" class="btn-action btn-tienda">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Volver a la Tienda / Catálogo</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Fotografía Vitale - San Martín, Mendoza. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

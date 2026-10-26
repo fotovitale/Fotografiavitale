@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta | Fotografía Vitale</title>
+    <meta name="description" content="Registrate en Fotografía Vitale para disfrutar de compras personalizadas, seguimiento de pedidos y ofertas exclusivas en San Martín, Mendoza.">
+    <meta name="robots" content="noindex, follow">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'registro' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e32322;
+            --primary-hover: #c41b1a;
+            --dark: #1a1a1a;
+            --light: #fff5d1;
+            --card-border: #e9ecef;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Micro-interacciones en botones */
+        button:active, .btn-submit:active, .btn-carrito-nav:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* HEADER CON BLUR STICKY */
+        header {
+            background-color: rgba(26, 26, 26, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-area img {
+            height: 42px;
+            border-radius: 8px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .btn-carrito-nav {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-carrito-nav:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .cart-badge {
+            background: white;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+
+        /* MAIN CONTAINER */
+        .auth-container {
+            max-width: 540px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        .auth-card {
+            background: white;
+            border-radius: 16px;
+            padding: 35px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--card-border);
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .auth-icon-circle {
+            width: 64px;
+            height: 64px;
+            background: #fff5f5;
+            color: var(--primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 14px;
+            border: 2px solid #ffe3e3;
+        }
+
+        .auth-header h2 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .auth-header p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* MENSAJES */
+        .messages-container {
+            margin-bottom: 20px;
+        }
+
+        .alert-msg {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-msg.error {
+            background: #ffebee;
+            color: #b71c1c;
+            border: 1px solid #ffcdd2;
+        }
+
+        /* FORMULARIO */
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1.5px solid var(--card-border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            outline: none;
+            background: #fdfdfd;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(227, 35, 34, 0.15);
+            background: white;
+        }
+
+        .form-help {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+            line-height: 1.35;
+        }
+
+        .form-errors {
+            color: #d32f2f;
+            font-size: 0.82rem;
+            margin-top: 4px;
+            list-style: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            box-shadow: 0 4px 12px rgba(227, 35, 34, 0.25);
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(227, 35, 34, 0.35);
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--card-border);
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'inicio' %}" class="logo-area">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <h1>Fotografía Vitale</h1>
+        </a>
+        <div class="nav-right-container">
+            <a href="{% url 'inicio' %}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</a>
+            <a href="{% url 'login' %}" class="nav-link"><i class="fa-solid fa-user"></i> Iniciar Sesión</a>
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav" title="Ver Carrito">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge">{{ total_items_carrito|default:'0' }}</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-icon-circle">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+                <h2>Crear Cuenta</h2>
+                <p>Registrate para seguir el estado de tus pedidos y guardar tus datos para futuras compras.</p>
+            </div>
+
+            {% if form.non_field_errors %}
+                <div class="alert-msg error">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{% url 'registro' %}">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="id_first_name">Nombre <span style="color: var(--primary);">*</span></label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <ul class="form-errors">
+                                {% for error in form.first_name.errors %}<li>{{ error }}</li>{% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_last_name">Apellido <span style="color: var(--primary);">*</span></label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <ul class="form-errors">
+                                {% for error in form.last_name.errors %}<li>{{ error }}</li>{% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_username">Nombre de Usuario <span style="color: var(--primary);">*</span></label>
+                    {{ form.username }}
+                    {% if form.username.help_text %}
+                        <div class="form-help">{{ form.username.help_text }}</div>
+                    {% endif %}
+                    {% if form.username.errors %}
+                        <ul class="form-errors">
+                            {% for error in form.username.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_email">Correo Electrónico <span style="color: var(--primary);">*</span></label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <ul class="form-errors">
+                            {% for error in form.email.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password1">Contraseña <span style="color: var(--primary);">*</span></label>
+                    {{ form.password1 }}
+                    {% if form.password1.help_text %}
+                        <div class="form-help">{{ form.password1.help_text }}</div>
+                    {% endif %}
+                    {% if form.password1.errors %}
+                        <ul class="form-errors">
+                            {% for error in form.password1.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password2">Confirmar Contraseña <span style="color: var(--primary);">*</span></label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}
+                        <ul class="form-errors">
+                            {% for error in form.password2.errors %}<li>{{ error }}</li>{% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Crear Mi Cuenta</span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                ¿Ya tenés una cuenta? <a href="{% url 'login' %}">Iniciar sesión acá</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Fotografía Vitale - San Martín, Mendoza. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

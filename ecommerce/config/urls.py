@@ -14,6 +14,9 @@ urlpatterns = [
     path("", include("catalogo.urls")),
 ]
 
+handler404 = "catalogo.views.custom_404_view"
+
 if settings.DEBUG:
     # En desarrollo Django sirve las imágenes subidas desde el admin.
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

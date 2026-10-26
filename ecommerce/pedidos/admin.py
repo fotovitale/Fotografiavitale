@@ -39,30 +39,47 @@ class PagoInline(SoloLecturaInlineMixin, admin.TabularInline):
 
 @admin.register(Pedido)
 class PedidoAdmin(admin.ModelAdmin):
-    list_display = ("codigo_corto", "nombre", "email", "total", "estado", "creado")
-    list_filter = ("estado", "creado")
-    search_fields = ("codigo", "nombre", "email", "telefono", "mp_preference_id")
+    list_display = ("id", "codigo_corto", "nombre_completo_display", "usuario", "requiere_fotos", "email", "envio_nombre", "total", "estado", "creado")
+    list_filter = ("estado", "requiere_fotos", "creado", "envio_modalidad")
+    search_fields = ("id", "codigo", "nombre", "apellido", "email", "telefono", "calle", "localidad", "mp_preference_id", "usuario__username", "usuario__email")
     date_hierarchy = "creado"
     inlines = (ItemPedidoInline, PagoInline)
     readonly_fields = (
         "codigo",
+        "usuario",
         "nombre",
+        "apellido",
         "email",
         "telefono",
+        "calle",
+        "numero",
+        "piso_depto",
+        "localidad",
+        "codigo_postal",
+        "envio_nombre",
+        "envio_modalidad",
+        "costo_envio",
+        "requiere_fotos",
+        "subtotal",
         "total",
         "mp_preference_id",
         "creado",
         "actualizado",
     )
     fieldsets = (
-        ("Pedido", {"fields": ("codigo", "estado", "total", "notas")}),
-        ("Comprador", {"fields": ("nombre", "email", "telefono")}),
+        ("Pedido", {"fields": ("codigo", "usuario", "estado", "requiere_fotos", "subtotal", "costo_envio", "total", "notas")}),
+        ("Comprador", {"fields": ("nombre", "apellido", "email", "telefono")}),
+        ("Dirección y Envío", {"fields": ("envio_nombre", "envio_modalidad", "calle", "numero", "piso_depto", "localidad", "codigo_postal")}),
         ("Mercado Pago", {"fields": ("mp_preference_id",)}),
         ("Fechas", {"fields": ("creado", "actualizado")}),
     )
 
     def has_add_permission(self, request):
         return False
+
+    @admin.display(description="Cliente", ordering="nombre")
+    def nombre_completo_display(self, obj):
+        return obj.nombre_completo
 
     @admin.display(description="Código", ordering="codigo")
     def codigo_corto(self, obj):

@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título y Meta Descripción dinámicos para Technical SEO -->
+    <title>{% block title %}Fotografía Vitale | Laboratorio Fotográfico, Tecnología y Outdoor en San Martín, Mendoza{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Fotografía Vitale en San Martín, Mendoza. Revelados profesionales, impresiones de alta calidad, productos de tecnología, camping, caza, pesca y cuchillería.{% endblock %}">
+    
+    <!-- Enlace Canónico -->
+    <link rel="canonical" href="{% block canonical %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+
+    <!-- Open Graph (OG Tags) para Redes Sociales y WhatsApp -->
+    {% block og_tags %}
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fotografía Vitale">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="{% block og_title %}Fotografía Vitale | San Martín, Mendoza{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}Laboratorio fotográfico, tecnología, cuchillería, camping, caza y pesca en San Martín, Mendoza.{% endblock %}">
+    <meta property="og:image" content="{% block og_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}{% endblock %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Fotografía Vitale - San Martín, Mendoza">
+    <meta property="og:url" content="{% block og_url %}{{ request.scheme }}://{{ request.get_host }}{{ request.path }}{% endblock %}">
+    
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{% block twitter_title %}Fotografía Vitale | San Martín, Mendoza{% endblock %}">
+    <meta name="twitter:description" content="{% block twitter_description %}Laboratorio fotográfico, tecnología, cuchillería, camping, caza y pesca.{% endblock %}">
+    <meta name="twitter:image" content="{% block twitter_image %}{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}{% endblock %}">
+    {% endblock og_tags %}
+
+    <!-- Google Fonts y FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Datos Estructurados Schema.org -->
+    {% block schema_org %}
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Fotografía Vitale",
+      "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}",
+      "telephone": "+5492634779824",
+      "email": "fotografiavitale.fv@gmail.com",
+      "url": "{{ request.scheme }}://{{ request.get_host }}/",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Martín",
+        "addressRegion": "Mendoza",
+        "addressCountry": "AR"
+      },
+      "priceRange": "$$"
+    }
+    </script>
+    {% endblock schema_org %}
+
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+<body>
+    {% block content %}{% endblock content %}
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

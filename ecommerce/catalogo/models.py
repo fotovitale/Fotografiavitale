@@ -130,6 +130,11 @@ class Producto(models.Model):
         blank=True,
         help_text='Ej: "OFERTA DESTACADA", "COMBO TECH".',
     )
+    requiere_fotos = models.BooleanField(
+        "requiere fotos",
+        default=False,
+        help_text="Marcar si el producto necesita que el cliente envíe sus fotos para personalizarlo (ej. packs de fotos, fotolibros).",
+    )
 
     # --- Auditoría ---
     creado = models.DateTimeField("creado", auto_now_add=True)
@@ -199,6 +204,42 @@ class Producto(models.Model):
         return self.activo and self.precio_final is not None and self.hay_stock
 
     # ------------------------------------------------------------------
+    # Galería de imágenes
+    # ------------------------------------------------------------------
+    @property
+    def fotos(self):
+        """
+        Retorna la lista de URLs de todas las fotos disponibles del producto:
+        la imagen principal (si existe) seguida de las imágenes adicionales.
+        """
+        lista = []
+        if self.imagen:
+            try:
+                lista.append(self.imagen.url)
+            except Exception:
+                pass
+        for img_extra in self.imagenes.all():
+            if img_extra.imagen:
+                try:
+                    url = img_extra.imagen.url
+                    if url not in lista:
+                        lista.append(url)
+                except Exception:
+                    pass
+        return lista
+
+    @property
+    def tiene_multiples_fotos(self):
+        """Devuelve True si el producto tiene más de una foto."""
+        return len(self.fotos) > 1
+
+    @property
+    def imagen_url(self):
+        """Devuelve la URL de la primera foto disponible o cadena vacía."""
+        todas = self.fotos
+        return todas[0] if todas else ""
+
+    # ------------------------------------------------------------------
     # Integración Mercado Pago
     # ------------------------------------------------------------------
     def to_mp_item(self, cantidad=1, request=None):
@@ -220,9 +261,10 @@ class Producto(models.Model):
             "unit_price": float(self.precio_final),
             "currency_id": getattr(settings, "MONEDA", "ARS"),
         }
-        if self.imagen and request is not None:
-            item["picture_url"] = request.build_absolute_uri(self.imagen.url)
+        if self.imagen_url and request is not None:
+            item["picture_url"] = request.build_absolute_uri(self.imagen_url)
         return item
+
 
 
 class ImagenProducto(models.Model):

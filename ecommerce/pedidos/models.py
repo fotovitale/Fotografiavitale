@@ -27,16 +27,53 @@ class Pedido(models.Model):
         "código", default=uuid.uuid4, unique=True, editable=False
     )
 
-    # Datos del comprador
-    nombre = models.CharField("nombre y apellido", max_length=150)
-    email = models.EmailField("email")
-    telefono = models.CharField("teléfono", max_length=30, blank=True)
+    # Usuario registrado (opcional para permitir compras como invitado)
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="pedidos",
+        verbose_name="usuario",
+        help_text="Usuario registrado que realizó la compra (opcional para invitados).",
+    )
 
-    estado = models.CharField(
-        "estado", max_length=20, choices=Estado.choices, default=Estado.PENDIENTE
+    # Datos del comprador
+    nombre = models.CharField("nombre", max_length=150)
+    apellido = models.CharField("apellido", max_length=150, blank=True)
+    email = models.EmailField("email")
+    telefono = models.CharField("teléfono", max_length=50, blank=True)
+
+    # Datos postales y de entrega
+    calle = models.CharField("calle", max_length=200, blank=True)
+    numero = models.CharField("número", max_length=20, blank=True)
+    piso_depto = models.CharField("piso / depto", max_length=50, blank=True)
+    localidad = models.CharField("localidad", max_length=100, blank=True)
+    codigo_postal = models.CharField("código postal", max_length=20, blank=True)
+
+    # Datos del envío
+    envio_nombre = models.CharField("transporte / correo", max_length=100, blank=True)
+    envio_modalidad = models.CharField("modalidad de envío", max_length=50, blank=True)
+    costo_envio = models.DecimalField(
+        "costo de envío (ARS)", max_digits=12, decimal_places=2, default=Decimal("0")
+    )
+
+    # Validación de personalización
+    requiere_fotos = models.BooleanField(
+        "requiere fotos",
+        default=False,
+        help_text="Indica si al menos uno de los productos requiere envío de fotos del cliente.",
+    )
+
+    # Totales y estado
+    subtotal = models.DecimalField(
+        "subtotal productos (ARS)", max_digits=12, decimal_places=2, default=Decimal("0")
     )
     total = models.DecimalField(
         "total (ARS)", max_digits=12, decimal_places=2, default=Decimal("0")
+    )
+    estado = models.CharField(
+        "estado", max_length=20, choices=Estado.choices, default=Estado.PENDIENTE
     )
     notas = models.TextField("notas internas", blank=True)
 
@@ -53,26 +90,52 @@ class Pedido(models.Model):
         verbose_name_plural = "pedidos"
         ordering = ["-creado"]
 
+    @property
+    def nombre_completo(self):
+        return f"{self.nombre} {self.apellido}".strip()
+
     def __str__(self):
-        return f"Pedido {str(self.codigo)[:8].upper()} - {self.nombre}"
+        return f"Pedido #{self.id or ''} ({str(self.codigo)[:8].upper()}) - {self.nombre_completo}"
 
     @property
     def external_reference(self):
         return str(self.codigo)
 
+    @property
+    def necesita_fotos(self):
+        """Devuelve True si el pedido requiere fotos personalizadas."""
+        if self.requiere_fotos:
+            return True
+        return any(
+            bool(item.producto and getattr(item.producto, "requiere_fotos", False))
+            for item in self.items.select_related("producto").all()
+        )
+
+    def verificar_requiere_fotos(self, guardar=True):
+        """Verifica y actualiza el campo requiere_fotos según los productos asociados."""
+        tiene = any(
+            bool(item.producto and getattr(item.producto, "requiere_fotos", False))
+            for item in self.items.select_related("producto").all()
+        )
+        if self.requiere_fotos != tiene:
+            self.requiere_fotos = tiene
+            if guardar and self.pk:
+                self.save(update_fields=["requiere_fotos", "actualizado"])
+        return self.requiere_fotos
+
     def recalcular_total(self, guardar=True):
-        total = self.items.aggregate(
+        subtotal = self.items.aggregate(
             t=Sum(F("precio_unitario") * F("cantidad"))
         )["t"] or Decimal("0")
-        self.total = total
+        self.subtotal = subtotal
+        self.total = subtotal + (self.costo_envio or Decimal("0"))
         if guardar:
-            self.save(update_fields=["total", "actualizado"])
-        return total
+            self.save(update_fields=["subtotal", "total", "actualizado"])
+        return self.total
 
-    def to_mp_preference(self, back_urls=None, notification_url=None, request=None):
+    def to_mp_preference(self, back_urls=None, notification_url=None, request=None, external_reference=None):
         """
-        Arma el cuerpo de la preferencia para Checkout Pro. Se completa con
-        las URLs reales cuando se implementen las vistas de pago.
+        Arma el cuerpo de la preferencia para Checkout Pro.
         """
         items = []
         for item in self.items.select_related("producto"):
@@ -87,15 +150,38 @@ class Pedido(models.Model):
                 datos["picture_url"] = request.build_absolute_uri(item.producto.imagen.url)
             items.append(datos)
 
+        payer_data = {
+            "name": self.nombre,
+            "email": self.email,
+        }
+        if self.apellido:
+            payer_data["surname"] = self.apellido
+        if self.telefono:
+            payer_data["phone"] = {"number": self.telefono}
+        if self.calle:
+            num = 0
+            if self.numero and self.numero.isdigit():
+                num = int(self.numero)
+            payer_data["address"] = {
+                "street_name": self.calle,
+                "street_number": num,
+                "zip_code": self.codigo_postal or "",
+            }
+
         preferencia = {
             "items": items,
-            "payer": {"name": self.nombre, "email": self.email},
-            "external_reference": self.external_reference,
+            "payer": payer_data,
+            "external_reference": str(external_reference or self.codigo),
             "statement_descriptor": "FOTOGRAFIA VITALE",
         }
         if back_urls:
             preferencia["back_urls"] = back_urls
+            success_url = str(back_urls.get("success") or "")
+            if not success_url.startswith("http://"):
+                preferencia["auto_return"] = "approved"
+        else:
             preferencia["auto_return"] = "approved"
+
         if notification_url:
             preferencia["notification_url"] = notification_url
         return preferencia

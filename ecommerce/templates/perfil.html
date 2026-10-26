@@ -1,0 +1,870 @@
+{% load static l10n %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil y Pedidos | Fotografía Vitale</title>
+    <meta name="description" content="Panel de usuario de Fotografía Vitale. Gestioná tu cuenta, revisá el historial de pedidos y realizá el seguimiento de tus compras.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'perfil' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+    
+    <!-- Open Graph (OG Tags) -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fotografía Vitale">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Mi Perfil | Fotografía Vitale">
+    <meta property="og:description" content="Panel de usuario y seguimiento de compras en Fotografía Vitale.">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'perfil' %}">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e32322;
+            --primary-hover: #c41b1a;
+            --dark: #1a1a1a;
+            --light: #fff5d1;
+            --whatsapp: #25d366;
+            --whatsapp-hover: #20ba5a;
+            --success: #28a745;
+            --warning-bg: #fff8e1;
+            --warning-border: #ffe082;
+            --warning-text: #b78103;
+            --card-border: #e9ecef;
+            --gray-bg: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Micro-interacciones en botones */
+        button:active, .btn-shop:active, .btn-send-photos:active, .btn-outline-dark:active, .btn-logout:active, .btn-carrito-nav:active {
+            transform: scale(0.97) !important;
+        }
+
+        /* HEADER CON BLUR STICKY */
+        header {
+            background-color: rgba(26, 26, 26, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .logo-area img {
+            height: 42px;
+            border-radius: 8px;
+        }
+
+        .logo-area h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-right-container {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 500;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            color: white;
+        }
+
+        .btn-carrito-nav {
+            background-color: var(--primary);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-carrito-nav:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .cart-badge {
+            background: white;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+        }
+
+        /* MAIN CONTAINER */
+        .perfil-container {
+            max-width: 960px;
+            margin: 35px auto 50px auto;
+            padding: 0 20px;
+            width: 100%;
+            flex: 1;
+        }
+
+        /* MENSAJES */
+        .messages-container {
+            margin-bottom: 24px;
+        }
+
+        .alert-msg {
+            padding: 12px 18px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .alert-msg.success {
+            background: #e8f5e9;
+            color: #1b5e20;
+            border: 1px solid #c8e6c9;
+        }
+
+        .alert-msg.info {
+            background: #e3f2fd;
+            color: #0d47a1;
+            border: 1px solid #bbdefb;
+        }
+
+        /* TARJETA DEL USUARIO */
+        .user-card {
+            background: white;
+            border-radius: 16px;
+            padding: 26px 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px solid var(--card-border);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .user-info-area {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .user-avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--dark) 0%, #333 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .user-details h2 {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 0.88rem;
+            color: #64748b;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-outline-dark {
+            border: 1.5px solid var(--dark);
+            color: var(--dark);
+            background: transparent;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-outline-dark:hover {
+            background: var(--dark);
+            color: white;
+        }
+
+        .btn-logout {
+            border: 1.5px solid #e74c3c;
+            color: #e74c3c;
+            background: transparent;
+            padding: 9px 18px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-logout:hover {
+            background: #e74c3c;
+            color: white;
+        }
+
+        /* SECCIÓN PEDIDOS */
+        .section-header-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-header-title h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pedidos-count-badge {
+            background: white;
+            color: var(--dark);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid var(--card-border);
+        }
+
+        /* TARJETA DE PEDIDO */
+        .pedido-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            margin-bottom: 26px;
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .pedido-card:hover {
+            box-shadow: 0 10px 28px rgba(0,0,0,0.08);
+        }
+
+        .pedido-header {
+            background: #fdfdfd;
+            border-bottom: 1px solid var(--card-border);
+            padding: 18px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+
+        .pedido-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-solicitar-devolucion {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-solicitar-devolucion:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+            border-color: #94a3b8;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-solicitar-devolucion i {
+            color: #0284c7;
+            font-size: 0.9rem;
+        }
+
+        .pedido-id-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pedido-number {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .pedido-date {
+            font-size: 0.82rem;
+            color: #64748b;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .status-pagado {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pendiente {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-entregado {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-cancelado {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* CUERPO DEL PEDIDO */
+        .pedido-body {
+            padding: 24px;
+        }
+
+        /* BANNER INELUDIBLE REQUIERE FOTOS (AMARILLO / NARANJA) */
+        .alert-photos-banner {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border: 2px solid #ffd54f;
+            border-left: 6px solid #ff9800;
+            border-radius: 12px;
+            padding: 20px 22px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 16px rgba(255, 152, 0, 0.12);
+            animation: pulseBanner 2.5s infinite;
+        }
+
+        @keyframes pulseBanner {
+            0% { box-shadow: 0 4px 16px rgba(255, 152, 0, 0.12); }
+            50% { box-shadow: 0 6px 22px rgba(255, 152, 0, 0.28); }
+            100% { box-shadow: 0 4px 16px rgba(255, 152, 0, 0.12); }
+        }
+
+        .photos-banner-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .photos-banner-icon {
+            width: 48px;
+            height: 48px;
+            background: #ff9800;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(255, 152, 0, 0.3);
+        }
+
+        .photos-banner-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #e65100;
+            line-height: 1.35;
+            margin-bottom: 4px;
+        }
+
+        .photos-banner-desc {
+            font-size: 0.88rem;
+            color: #795548;
+            line-height: 1.45;
+            margin: 0;
+        }
+
+        .btn-send-photos {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background-color: var(--whatsapp);
+            color: white;
+            font-weight: 700;
+            font-size: 0.95rem;
+            padding: 12px 22px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-send-photos:hover {
+            background-color: var(--whatsapp-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(37, 211, 102, 0.45);
+        }
+
+        /* TABLA DE PRODUCTOS */
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .items-table th {
+            text-align: left;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #64748b;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .items-table td {
+            padding: 12px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid #edf2f7;
+            color: #334155;
+        }
+
+        .items-table td.num {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .item-nombre-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .item-badge-foto {
+            background: #fff3cd;
+            color: #856404;
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* TOTALES Y ENVÍO */
+        .pedido-footer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            background: #fcfcfc;
+            border: 1px solid #edf2f7;
+            border-radius: 12px;
+            padding: 16px 20px;
+        }
+
+        @media (max-width: 650px) {
+            .pedido-footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .info-col p {
+            font-size: 0.86rem;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .info-col p:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-col strong {
+            color: var(--dark);
+        }
+
+        .totales-col {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            text-align: right;
+        }
+
+        .totales-sub {
+            font-size: 0.86rem;
+            color: #64748b;
+            margin-bottom: 3px;
+        }
+
+        .totales-final {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        /* EMPTY STATE PREMIUM */
+        .empty-orders-card {
+            background: white;
+            border-radius: 16px;
+            padding: 55px 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            border: 1px dashed #cbd5e1;
+        }
+
+        .empty-orders-icon-wrap {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #fff0f0;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(227, 35, 34, 0.12);
+        }
+
+        .empty-orders-card h3 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 8px;
+        }
+
+        .empty-orders-card p {
+            font-size: 0.95rem;
+            color: #64748b;
+            max-width: 460px;
+            margin: 0 auto 24px;
+            line-height: 1.55;
+        }
+
+        .btn-shop {
+            background: var(--primary);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(227, 35, 34, 0.35);
+            transition: all 0.2s ease;
+        }
+
+        .btn-shop:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(227, 35, 34, 0.45);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: #888;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="{% url 'inicio' %}" class="logo-area">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <h1>Fotografía Vitale</h1>
+        </a>
+        <div class="nav-right-container">
+            <a href="{% url 'inicio' %}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</a>
+            <a href="{% url 'perfil' %}" class="nav-link" style="color: white; font-weight: 700;"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+            <a href="{% url 'logout' %}" class="nav-link" title="Cerrar sesión"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</a>
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav" title="Ver Carrito">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge">{{ total_items_carrito|default:'0' }}</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="perfil-container">
+        {% if messages %}
+            <div class="messages-container">
+                {% for msg in messages %}
+                    <div class="alert-msg {% if msg.tags %}{{ msg.tags }}{% else %}info{% endif %}">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <span>{{ msg }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- INFORMACIÓN DEL USUARIO -->
+        <div class="user-card">
+            <div class="user-info-area">
+                <div class="user-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h2>{{ user.first_name|default:user.username }} {{ user.last_name|default:'' }}</h2>
+                    <p><i class="fa-regular fa-envelope" style="margin-right: 4px;"></i> {{ user.email }} • Usuario: @{{ user.username }}</p>
+                </div>
+            </div>
+            <div class="user-actions">
+                <a href="{% url 'catalogo' %}" class="btn-outline-dark">
+                    <i class="fa-solid fa-store"></i> Ir a la Tienda
+                </a>
+                <a href="{% url 'logout' %}" class="btn-logout">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+
+        <!-- HISTORIAL DE PEDIDOS -->
+        <div class="section-header-title">
+            <h3><i class="fa-solid fa-receipt" style="color: var(--primary);"></i> Historial de Pedidos</h3>
+            <span class="pedidos-count-badge">{{ total_pedidos }} pedido{{ total_pedidos|pluralize:"s" }}</span>
+        </div>
+
+        {% if pedidos %}
+            {% for pedido in pedidos %}
+                <div class="pedido-card">
+                    <div class="pedido-header">
+                        <div class="pedido-id-info">
+                            <span class="pedido-number">Pedido #{{ pedido.id }}</span>
+                            <span style="color: #94a3b8; font-size: 0.85rem;">({{ pedido.codigo|stringformat:".8s"|upper }})</span>
+                            <span class="pedido-date">• {{ pedido.creado|date:"d/m/Y H:i" }}</span>
+                        </div>
+                        <div class="pedido-header-actions">
+                            {% if pedido.estado == 'pagado' or pedido.estado == 'entregado' %}
+                                <a href="https://wa.me/{{ numero_wsp|cut:'+'|default:'5492634779824' }}?text=Hola%20Fotograf%C3%ADa%20Vitale%2C%20quiero%20consultar%20sobre%20un%20cambio%20o%20devoluci%C3%B3n%20de%20mi%20pedido%20%23{{ pedido.id }}." 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="btn-solicitar-devolucion" 
+                                   title="Solicitar cambio o devolución por WhatsApp">
+                                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                                    <span>Solicitar cambio o devolución</span>
+                                </a>
+                            {% endif %}
+                            <div>
+                                {% if pedido.estado == 'pagado' %}
+                                    <span class="status-badge status-pagado"><i class="fa-solid fa-circle-check"></i> Pagado</span>
+                                {% elif pedido.estado == 'pendiente' %}
+                                    <span class="status-badge status-pendiente"><i class="fa-solid fa-clock"></i> Pendiente de pago</span>
+                                {% elif pedido.estado == 'entregado' %}
+                                    <span class="status-badge status-entregado"><i class="fa-solid fa-box-open"></i> Entregado</span>
+                                {% else %}
+                                    <span class="status-badge status-cancelado"><i class="fa-solid fa-circle-xmark"></i> {{ pedido.get_estado_display }}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pedido-body">
+                        <!-- BANNER DESTACADO SI REQUIERE FOTOS -->
+                        {% if pedido.necesita_fotos or pedido.requiere_fotos %}
+                            <div class="alert-photos-banner" role="alert">
+                                <div class="photos-banner-top">
+                                    <div class="photos-banner-icon">
+                                        <i class="fa-solid fa-camera-retro"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="photos-banner-title">
+                                            ¡ATENCIÓN! Tu pedido requiere que nos envíes las imágenes para poder procesarlo.
+                                        </h4>
+                                        <p class="photos-banner-desc">
+                                            Este pedido contiene productos que requieren personalización. Hacé clic en el botón de abajo para enviar tus fotos por WhatsApp indicando tu número de pedido.
+                                        </p>
+                                    </div>
+                                </div>
+                                <a href="https://wa.me/{{ numero_wsp }}?text=Hola%20Fotograf%C3%ADa%20Vitale%2C%20soy%20del%20pedido%20%23{{ pedido.id }}.%20Ac%C3%A1%20env%C3%ADo%20las%20fotos%20para%20mi%20compra." 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   class="btn-send-photos">
+                                    <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i>
+                                    <span>Enviar fotos por WhatsApp (Pedido #{{ pedido.id }})</span>
+                                </a>
+                            </div>
+                        {% endif %}
+
+                        <!-- LISTA DE PRODUCTOS -->
+                        <table class="items-table">
+                            <thead>
+                                <tr>
+                                    <th>Producto</th>
+                                    <th class="num">Cant.</th>
+                                    <th class="num">Precio Unit.</th>
+                                    <th class="num">Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pedido.items.all %}
+                                    <tr>
+                                        <td>
+                                            <div class="item-nombre-wrapper">
+                                                <strong>{{ item.nombre_producto }}</strong>
+                                                {% if item.producto and item.producto.requiere_fotos %}
+                                                    <span class="item-badge-foto" title="Requiere fotos para personalizar">
+                                                        <i class="fa-solid fa-camera"></i> Requiere fotos
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td class="num">{{ item.cantidad }}</td>
+                                        <td class="num">${{ item.precio_unitario|floatformat:0 }}</td>
+                                        <td class="num">${{ item.subtotal|floatformat:0 }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <!-- DATOS DE ENTREGA Y TOTALES -->
+                        <div class="pedido-footer-grid">
+                            <div class="info-col">
+                                <p><strong>Entrega:</strong> 
+                                    {% if pedido.envio_modalidad == 'LOCAL' or 'local' in pedido.envio_nombre|lower %}
+                                        Retiro por el local (9 de Julio 73, San Martín, Mendoza)
+                                    {% elif pedido.envio_modalidad == 'S' %}
+                                        Retiro en Sucursal ({{ pedido.envio_nombre }})
+                                    {% else %}
+                                        Envío a Domicilio ({{ pedido.envio_nombre }})
+                                    {% endif %}
+                                </p>
+                                {% if pedido.calle %}
+                                    <p><strong>Destino:</strong> {{ pedido.calle }} {{ pedido.numero }}{% if pedido.piso_depto %}, {{ pedido.piso_depto }}{% endif %}, {{ pedido.localidad }} (CP {{ pedido.codigo_postal }})</p>
+                                {% endif %}
+                                <p><strong>Contacto:</strong> {{ pedido.nombre_completo }} • {{ pedido.telefono }}</p>
+                            </div>
+
+                            <div class="totales-col">
+                                <div class="totales-sub">Subtotal productos: ${{ pedido.subtotal|floatformat:0 }}</div>
+                                <div class="totales-sub">Costo de envío: ${{ pedido.costo_envio|floatformat:0 }}</div>
+                                <div class="totales-final">Total: ${{ pedido.total|floatformat:0 }} ARS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-orders-card">
+                <div class="empty-orders-icon-wrap">
+                    <i class="fa-solid fa-box-open"></i>
+                </div>
+                <h3>¡Aún no tenés pedidos registrados!</h3>
+                <p>Tu historial de compras aparecerá aquí en cuanto realices tu primer pedido. Podrás seguir el estado del pago, envío y subir fotos para productos personalizados.</p>
+                <a href="{% url 'catalogo' %}" class="btn-shop">
+                    <i class="fa-solid fa-store"></i> Ir al Catálogo
+                </a>
+            </div>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>© 2026 Fotografía Vitale - San Martín, Mendoza. Todos los derechos reservados.</p>
+    </footer>
+
+</body>
+</html>

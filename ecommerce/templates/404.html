@@ -1,0 +1,321 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página no encontrada (404) | Fotografía Vitale</title>
+    <meta name="description" content="La página que estás buscando no existe o fue movida. Volvé al catálogo de Fotografía Vitale en San Martín, Mendoza.">
+    <meta name="robots" content="noindex, follow">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+    
+    <!-- Tipografía y FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #e32322;
+            --primary-hover: #c41b1a;
+            --dark: #1a1a1a;
+            --light: #fff5d1;
+            --whatsapp: #25d366;
+            --card-border: #e9ecef;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* NAVBAR SUPERIOR */
+        .header-nav {
+            background-color: var(--dark);
+            padding: 12px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+
+        .nav-logo img {
+            height: 42px;
+            width: auto;
+            border-radius: 6px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: color 0.2s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        /* CONTENIDO PRINCIPAL 404 */
+        .container-404 {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .card-404 {
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--card-border);
+            max-width: 640px;
+            width: 100%;
+            padding: 48px 36px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-404::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), #ff6b6b);
+        }
+
+        .icon-badge-404 {
+            width: 100px;
+            height: 100px;
+            background: #fff0f0;
+            color: var(--primary);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(227, 35, 34, 0.18);
+            animation: floatAnim 3s ease-in-out infinite;
+        }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .code-404 {
+            font-size: 4rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        h1 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 14px;
+        }
+
+        .desc-404 {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .actions-404 {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .btn-404-primary {
+            background-color: var(--primary);
+            color: #ffffff !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 30px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 6px 20px rgba(227, 35, 34, 0.35);
+            transition: all 0.25s ease;
+        }
+
+        .btn-404-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(227, 35, 34, 0.45);
+        }
+
+        .btn-404-secondary {
+            background-color: #f1f3f5;
+            color: var(--dark) !important;
+            text-decoration: none;
+            padding: 14px 26px;
+            border-radius: 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-404-secondary:hover {
+            background-color: #e2e6ea;
+            transform: translateY(-2px);
+        }
+
+        /* AYUDA WHATSAPP */
+        .support-link {
+            font-size: 0.92rem;
+            color: var(--text-muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            transition: all 0.2s ease;
+        }
+
+        .support-link i {
+            color: var(--whatsapp);
+            font-size: 1.15rem;
+        }
+
+        .support-link:hover {
+            background: #edf2f7;
+            color: var(--dark);
+        }
+
+        /* FOOTER */
+        .footer-404 {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        @media (max-width: 540px) {
+            .card-404 {
+                padding: 32px 20px;
+            }
+            .code-404 {
+                font-size: 3.2rem;
+            }
+            h1 {
+                font-size: 1.35rem;
+            }
+            .btn-404-primary, .btn-404-secondary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-nav">
+        <a href="{% url 'inicio' %}" class="nav-logo" title="Volver al Inicio">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <span>Fotografía Vitale</span>
+        </a>
+        <nav class="nav-links">
+            <a href="{% url 'inicio' %}" class="nav-link"><i class="fa-solid fa-house"></i> Inicio</a>
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-boxes-stacked"></i> Catálogo</a>
+            {% if total_items_carrito %}
+            <a href="{% url 'carrito' %}" class="nav-link" style="color: var(--primary);"><i class="fa-solid fa-cart-shopping"></i> Carrito ({{ total_items_carrito }})</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="container-404">
+        <div class="card-404">
+            <div class="icon-badge-404">
+                <i class="fa-solid fa-camera-rotate"></i>
+            </div>
+            
+            <div class="code-404">404</div>
+            <h1>Página no encontrada</h1>
+            
+            <p class="desc-404">
+                ¡Ups! Parece que esta foto no salió en el revelado. El enlace que intentaste abrir no existe, cambió de lugar o fue eliminado.
+            </p>
+
+            <div class="actions-404">
+                <a href="{% url 'catalogo' %}" class="btn-404-primary">
+                    <i class="fa-solid fa-boxes-stacked"></i> Volver al Catálogo
+                </a>
+                <a href="{% url 'inicio' %}" class="btn-404-secondary">
+                    <i class="fa-solid fa-house"></i> Ir al Inicio
+                </a>
+            </div>
+
+            <div>
+                <a href="https://wa.me/{{ numero_wsp|default:'+5492634779824' }}?text=Hola!%20Encontr%C3%A9%20un%20error%20404%20en%20el%20sitio%20de%20Fotograf%C3%ADa%20Vitale." 
+                   class="support-link" target="_blank" rel="noopener noreferrer">
+                    <i class="fa-brands fa-whatsapp"></i>
+                    <span>¿Buscabas un producto específico? Consultanos por WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-404">
+        <p>&copy; Fotografía Vitale — San Martín, Mendoza, Argentina.</p>
+    </footer>
+
+</body>
+</html>

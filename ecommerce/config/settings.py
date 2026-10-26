@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(BASE_DIR / ".env")
+load_dotenv(BASE_DIR / ".env", override=True)
 
 
 def _env_list(nombre, default=""):
@@ -156,8 +156,24 @@ MONEDA = "ARS"
 
 
 # ---------------------------------------------------------------------------
-# Mercado Pago (preparado para la integración futura)
+# Mercado Pago (Checkout Pro)
 # ---------------------------------------------------------------------------
-MERCADOPAGO_PUBLIC_KEY = os.getenv("MERCADOPAGO_PUBLIC_KEY", "")
-MERCADOPAGO_ACCESS_TOKEN = os.getenv("MERCADOPAGO_ACCESS_TOKEN", "")
-MERCADOPAGO_WEBHOOK_SECRET = os.getenv("MERCADOPAGO_WEBHOOK_SECRET", "")
+MERCADOPAGO_PUBLIC_KEY = os.environ.get("MERCADOPAGO_PUBLIC_KEY", "")
+MERCADOPAGO_ACCESS_TOKEN = os.environ.get("MERCADOPAGO_ACCESS_TOKEN", "")
+MERCADOPAGO_WEBHOOK_SECRET = os.environ.get("MERCADOPAGO_WEBHOOK_SECRET", "")
+
+
+# ---------------------------------------------------------------------------
+# EnvioPack (logística y envíos)
+# ---------------------------------------------------------------------------
+ENVIOPACK_API_KEY = os.getenv("ENVIOPACK_API_KEY", "")
+ENVIOPACK_SECRET_KEY = os.getenv("ENVIOPACK_SECRET_KEY", "")
+
+
+# ---------------------------------------------------------------------------
+# Autenticación de Usuarios
+# ---------------------------------------------------------------------------
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "perfil"
+LOGOUT_REDIRECT_URL = "inicio"
+

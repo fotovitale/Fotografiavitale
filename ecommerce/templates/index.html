@@ -2,15 +2,57 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Configuración de vista previa para WhatsApp -->
-<meta property="og:title" content="Catálogo | Fotografía Vitale">
-<meta property="og:description" content="Tecnología, Camping, Caza y Pesca.">
-<meta property="og:image" content="https://fotovitale.github.io/Fotografiavitale/Logo2.jpeg">
-<meta property="og:url" content="https://fotovitale.github.io/Fotografiavitale/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fotografía Vitale | San Martín, Mendoza</title>
-    <link rel="icon" type="image/jpeg" href="{% static 'logochico3.png' %}">
+    
+    <!-- Technical SEO Básico -->
+    <title>Fotografía Vitale | Laboratorio Fotográfico, Tecnología y Outdoor en San Martín, Mendoza</title>
+    <meta name="description" content="Fotografía Vitale en San Martín, Mendoza. Revelados profesionales, impresiones de alta calidad, productos de tecnología, camping, caza, pesca y cuchillería artesanal.">
+    <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{% url 'inicio' %}">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="shortcut icon" type="image/png" href="{% static 'logochico3.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'logochico3.png' %}">
+
+    <!-- Open Graph (OG Tags) para Redes y WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fotografía Vitale">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Fotografía Vitale | Laboratorio Fotográfico, Tecnología y Outdoor">
+    <meta property="og:description" content="Tu multiespacio de confianza en San Martín, Mendoza. Laboratorio fotográfico profesional, tecnología y artículos de camping y pesca.">
+    <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Fotografía Vitale - San Martín, Mendoza">
+    <meta property="og:url" content="{{ request.scheme }}://{{ request.get_host }}{% url 'inicio' %}">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Fotografía Vitale | Laboratorio Fotográfico, Tecnología y Outdoor">
+    <meta name="twitter:description" content="Tu multiespacio de confianza en San Martín, Mendoza. Revelados profesionales, tecnología y camping.">
+    <meta name="twitter:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}">
+
+    <!-- Datos Estructurados Schema.org: LocalBusiness -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "Fotografía Vitale",
+      "image": "{{ request.scheme }}://{{ request.get_host }}{% static 'Logo2.jpeg' %}",
+      "description": "Laboratorio fotográfico profesional, revelado digital y analógico, tecnología, camping, caza, pesca y cuchillería artesanal en San Martín, Mendoza.",
+      "telephone": "+5492634779824",
+      "email": "fotografiavitale.fv@gmail.com",
+      "url": "{{ request.scheme }}://{{ request.get_host }}{% url 'inicio' %}",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "San Martín",
+        "addressRegion": "Mendoza",
+        "addressCountry": "AR"
+      },
+      "priceRange": "$$"
+    }
+    </script>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -35,10 +77,44 @@
             height: auto;
         }
 
+        .visually-hidden {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        @keyframes pageFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         body {
             background-color: var(--light);
             color: var(--dark);
             scroll-behavior: smooth;
+            animation: pageFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Micro-interacciones en botones y tarjetas */
+        button:active, 
+        .btn-main:active, 
+        .btn-card-catalogo:active, 
+        .btn-carrito-nav:active,
+        .btn-comprar-modal:active,
+        .btn-consultar:active {
+            transform: scale(0.97) !important;
         }
 
         .header-banner {
@@ -139,6 +215,13 @@
         }
 
         .carousel-slide:hover .promo-img-container img { transform: scale(1.05) rotate(-2deg); }
+        .carousel-slide.agotado .promo-img-container img { filter: grayscale(35%) drop-shadow(0 15px 15px rgba(0,0,0,0.3)); }
+        .btn-agotado {
+            background-color: #94a3b8 !important;
+            cursor: not-allowed !important;
+            box-shadow: none !important;
+            opacity: 0.85;
+        }
 
         .carousel-btn {
             position: absolute;
@@ -266,15 +349,23 @@
         .subtitle { text-align: center; margin-bottom: 40px; color: #636e72; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .card {
-            background: white; border-radius: 15px; padding: 30px; text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s;
+            background: white; border-radius: 16px; padding: 32px 24px; text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); 
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease;
             cursor: pointer; border: 2px solid transparent; display: flex; flex-direction: column;
             justify-content: space-between; align-items: center;
         }
-        .card:hover { transform: translateY(-10px); box-shadow: 0 15px 25px rgba(0,0,0,0.1); border-color: var(--primary); }
+        .card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 20px 35px rgba(0,0,0,0.12); 
+            border-color: var(--primary); 
+        }
+        .card:hover .icon {
+            transform: scale(1.1);
+        }
         .card h3 { font-size: 1.5rem; margin: 15px 0; color: var(--dark); }
         .card p { color: #636e72; font-size: 0.95rem; }
-        .icon { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
+        .icon { font-size: 3rem; color: var(--primary); margin-bottom: 10px; transition: transform 0.3s ease; }
 
         .btn-card-catalogo {
             width: 100%; margin-top: 20px; padding: 12px 18px; min-height: 48px; background-color: var(--dark); color: #ffffff;
@@ -336,12 +427,110 @@
             .footer-comercial { padding: 30px 15px 15px 15px; }
             .whatsapp-float { width: 52px !important; height: 52px !important; bottom: 20px !important; right: 20px !important; }
         }
+
+        /* BARRA DE NAVEGACIÓN SUPERIOR CON BOTÓN DE CARRITO (SMART STICKY BLUR) */
+        .top-nav-bar {
+            background-color: rgba(26, 26, 26, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            color: white;
+            padding: 10px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+            transition: all 0.3s ease;
+        }
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.15rem;
+        }
+        .nav-brand img {
+            height: 38px;
+            border-radius: 6px;
+        }
+        .nav-links-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .nav-link {
+            color: #ddd;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        .btn-carrito-nav {
+            background-color: var(--primary);
+            color: white !important;
+            text-decoration: none;
+            padding: 7px 16px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            box-shadow: 0 3px 10px rgba(227, 35, 34, 0.35);
+            transition: transform 0.15s, background-color 0.2s;
+        }
+        .btn-carrito-nav:hover {
+            background-color: #c01c1b;
+            transform: scale(1.04);
+        }
+        .cart-badge {
+            background: white;
+            color: var(--primary);
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 1px 6px;
+            border-radius: 10px;
+        }
+        @media (max-width: 600px) {
+            .nav-brand span { display: none; }
+            .top-nav-bar { padding: 8px 12px; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- NAVEGACIÓN SUPERIOR CON BOTÓN DE CARRITO ANCLADO A LA DERECHA -->
+    <nav class="top-nav-bar">
+        <a href="{% url 'inicio' %}" class="nav-brand">
+            <img src="{% static 'logochico3.png' %}" alt="Logo Fotografía Vitale">
+            <span>Fotografía Vitale</span>
+        </a>
+        <div class="nav-links-right">
+            <a href="{% url 'catalogo' %}" class="nav-link"><i class="fa-solid fa-store"></i> Catálogo</a>
+            {% if request.user.is_authenticated %}
+                <a href="{% url 'perfil' %}" class="nav-link" title="Mi Cuenta"><i class="fa-solid fa-user"></i> Mi Perfil</a>
+                <a href="{% url 'logout' %}" class="nav-link" title="Cerrar sesión"><i class="fa-solid fa-arrow-right-from-bracket"></i> Salir</a>
+            {% else %}
+                <a href="{% url 'login' %}?next={% url 'inicio' %}" class="nav-link" title="Iniciar sesión"><i class="fa-solid fa-user"></i> Ingresar</a>
+            {% endif %}
+            <a href="{% url 'carrito' %}" class="btn-carrito-nav" title="Ver Carrito de Compras">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>Carrito</span>
+                {% if total_items_carrito %}<span class="cart-badge">{{ total_items_carrito }}</span>{% endif %}
+            </a>
+        </div>
+    </nav>
+
     <header class="header-banner">
-        <img src="{% static 'Logo2.jpeg' %}" alt="Banner Fotografía Vitale">
+        <h1 class="visually-hidden">Fotografía Vitale — Laboratorio Fotográfico, Tecnología y Outdoor en San Martín, Mendoza</h1>
+        <img src="{% static 'Logo2.jpeg' %}" alt="Banner Fotografía Vitale" loading="lazy">
     </header>
 
     <!-- CARROUSEL DE PROMOCIONES -->
@@ -476,20 +665,22 @@
             }
 
             promos.forEach((promo, index) => {
+                const estaAgotado = promo.hay_stock === false || promo.stock <= 0;
                 const slide = document.createElement('div');
-                slide.className = 'carousel-slide';
+                slide.className = 'carousel-slide' + (estaAgotado ? ' agotado' : '');
                 slide.onclick = () => abrirModalPromo(index);
                 const imgUrl = resolverUrlFoto(promo.imagen);
                 slide.innerHTML = `
                     <div class="promo-content ${promo.bgClass || ''}">
                         <div class="promo-text">
-                            <span class="promo-badge">${promo.badge}</span>
+                            <span class="promo-badge">${estaAgotado ? '<i class="fa-solid fa-ban"></i> AGOTADO' : promo.badge}</span>
                             <h2>${promo.titulo}</h2>
                             <p>${promo.descripcion}</p>
                             <div class="promo-price">${promo.precio}</div>
                         </div>
-                        <div class="promo-img-container">
-                            <img src="${imgUrl}" alt="${promo.titulo}">
+                        <div class="promo-img-container" style="position: relative;">
+                            ${estaAgotado ? '<span style="position:absolute; top:12px; left:12px; background-color:#e32322; color:white; padding:4px 10px; border-radius:6px; font-weight:700; font-size:0.8rem; z-index:5;"><i class="fa-solid fa-ban"></i> Agotado</span>' : ''}
+                            <img src="${imgUrl}" alt="${promo.titulo}" loading="lazy">
                         </div>
                     </div>
                 `;
@@ -536,17 +727,31 @@
             const modal = document.getElementById('modalPromo');
             const details = document.getElementById('promoDetails');
             const imgPath = resolverUrlFoto(promo.imagen);
+            const estaAgotado = promo.hay_stock === false || promo.stock <= 0;
             
             details.innerHTML = `
-                <img src="${imgPath}" alt="${promo.titulo}" onclick="abrirZoom('${imgPath}')">
+                <div style="position: relative; display: inline-block;">
+                    ${estaAgotado ? '<span style="position:absolute; top:10px; left:10px; background-color:#e32322; color:white; padding:4px 10px; border-radius:6px; font-weight:700; font-size:0.8rem; z-index:5;"><i class="fa-solid fa-ban"></i> Agotado</span>' : ''}
+                    <img src="${imgPath}" alt="${promo.titulo}" onclick="abrirZoom('${imgPath}')">
+                </div>
                 <span class="hint-zoom">(Tocá la foto para ampliarla)</span>
                 <h3>${promo.titulo}</h3>
                 <p>${promo.descripcion}</p>
                 <div class="precio-modal">${promo.precio}</div>
-                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(promo.wspText)}" target="_blank" rel="noopener noreferrer" class="btn-main" style="width: 100%; min-height: 50px; padding: 14px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--whatsapp); font-size: 1.05rem;">
-                    <i class="fa-brands fa-whatsapp"></i> Reservar Promo por WhatsApp
+                <!-- Botón Principal: Añadir al carrito o Agotado -->
+                ${!estaAgotado ? `
+                <a href="/carrito/?agregar=${promo.id}" class="btn-main" style="width: 100%; min-height: 48px; padding: 13px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--primary); color: white; font-weight: 700; text-decoration: none; margin-bottom: 10px; font-size: 1.05rem;">
+                    <i class="fa-solid fa-cart-shopping"></i> Añadir al carrito
                 </a>
-
+                ` : `
+                <button class="btn-main btn-agotado" disabled aria-disabled="true" style="width: 100%; min-height: 48px; padding: 13px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: #94a3b8; color: white; font-weight: 700; border: none; margin-bottom: 10px; font-size: 1.05rem; cursor: not-allowed; opacity: 0.85;">
+                    <i class="fa-solid fa-ban"></i> Agotado
+                </button>
+                `}
+                <!-- Botón Secundario: Consultar por WhatsApp -->
+                <a href="https://wa.me/${NUMERO_WSP}?text=${encodeURIComponent(estaAgotado ? 'Hola! Quería consultar cuándo ingresa stock de la promo: ' + promo.titulo : promo.wspText)}" target="_blank" rel="noopener noreferrer" class="btn-main" style="width: 100%; min-height: 46px; padding: 12px 20px; border-radius: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; background-color: var(--whatsapp); color: white; font-weight: 600; text-decoration: none; font-size: 1rem;">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar por WhatsApp
+                </a>
             `;
             modal.style.display = 'flex';
             clearInterval(slideInterval); // Pausa el carrousel al ver la promo

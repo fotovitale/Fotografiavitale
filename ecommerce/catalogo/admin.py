@@ -52,13 +52,14 @@ class ProductoAdmin(admin.ModelAdmin):
         "precio_oferta",
         "stock",
         "estado_stock",
+        "requiere_fotos",
         "activo",
     )
     list_display_links = ("miniatura", "nombre")
     # Edición rápida directamente desde la lista:
-    list_editable = ("destacado", "precio", "precio_oferta", "stock", "activo")
+    list_editable = ("destacado", "precio", "precio_oferta", "stock", "requiere_fotos", "activo")
 
-    list_filter = ("categoria", "activo", "destacado")
+    list_filter = ("categoria", "requiere_fotos", "activo", "destacado")
     search_fields = ("nombre", "sku", "descripcion")
     list_per_page = 50
     list_select_related = ("categoria",)
@@ -74,8 +75,8 @@ class ProductoAdmin(admin.ModelAdmin):
         ("Precio y stock", {"fields": (("precio", "precio_oferta"), "stock")}),
         ("Imagen principal", {"fields": ("vista_previa", "imagen")}),
         (
-            "Visibilidad y promociones",
-            {"fields": ("activo", "destacado", "etiqueta_promo")},
+            "Visibilidad y personalización",
+            {"fields": ("activo", "destacado", "requiere_fotos", "etiqueta_promo")},
         ),
         (
             "Avanzado",

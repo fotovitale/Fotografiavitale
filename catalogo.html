@@ -1,15 +1,48 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Configuración de vista previa para WhatsApp -->
-<meta property="og:title" content="Catálogo | Fotografía Vitale">
-<meta property="og:description" content="Tecnología, Camping, Caza y Pesca.">
-<meta property="og:image" content="https://fotovitale.github.io/Fotografiavitale/Logo2.jpeg">
-<meta property="og:url" content="https://fotovitale.github.io/Fotografiavitale/">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo Completo | Fotografía Vitale</title>
-    <link rel="icon" type="image/jpeg" href="logochico3.png">
+    
+    <!-- Technical SEO Básico -->
+    <title>Catálogo de Productos | Fotografía Vitale - San Martín, Mendoza</title>
+    <meta name="description" content="Explorá el catálogo completo de Fotografía Vitale: fotografía, impresiones, accesorios gamer, tecnología, equipamiento outdoor, camping, pesca y promociones exclusivas con envío.">
+    <link rel="canonical" href="https://fotovitale.github.io/Fotografiavitale/catalogo.html">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="logochico3.png">
+    <link rel="shortcut icon" type="image/png" href="logochico3.png">
+    <link rel="apple-touch-icon" href="logochico3.png">
+
+    <!-- Open Graph (OG Tags) para Redes y WhatsApp -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Fotografía Vitale">
+    <meta property="og:locale" content="es_AR">
+    <meta property="og:title" content="Catálogo de Productos | Fotografía Vitale">
+    <meta property="og:description" content="Descubrí todo nuestro catálogo de fotografía, tecnología, camping, pesca y cuchillería en San Martín, Mendoza.">
+    <meta property="og:image" content="https://fotovitale.github.io/Fotografiavitale/Logo2.jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Catálogo Fotografía Vitale">
+    <meta property="og:url" content="https://fotovitale.github.io/Fotografiavitale/catalogo.html">
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Catálogo de Productos | Fotografía Vitale">
+    <meta name="twitter:description" content="Catálogo completo de Fotografía Vitale: laboratorio, tecnología y outdoor en San Martín, Mendoza.">
+    <meta name="twitter:image" content="https://fotovitale.github.io/Fotografiavitale/Logo2.jpeg">
+
+    <!-- Datos Estructurados Schema.org: Catálogo de Productos -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      "name": "Catálogo de Productos - Fotografía Vitale",
+      "description": "Catálogo completo con fotografía, tecnología, camping, caza, pesca y cuchillería.",
+      "url": "https://fotovitale.github.io/Fotografiavitale/catalogo.html"
+    }
+    </script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -23,26 +56,31 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
         body { background-color: var(--light); color: var(--dark); padding-bottom: 60px; overflow-x: hidden; }
 
-        /* HEADER Y NAVEGACIÓN */
-        .catalogo-header { background-color: white; padding: 12px 15px; text-align: center; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 90; }
-        .catalogo-nav { display: flex; justify-content: space-between; align-items: center; max-width: 1100px; margin: 0 auto 8px auto; }
-        .btn-volver { color: var(--dark); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; font-size: 0.85rem; width: 140px; }
+        /* HEADER Y NAVEGACIÓN EN 3 COLUMNAS */
+        .catalogo-header { background-color: white; padding: 8px 20px 6px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 90; display: flex; flex-direction: column; gap: 6px; }
+        .catalogo-nav { display: flex; align-items: center; justify-content: space-between; width: 100%; margin: 0; gap: 16px; }
+        .nav-col-left { display: flex; align-items: center; justify-content: flex-start; flex-shrink: 0; min-width: 160px; }
+        .btn-volver { color: var(--dark); text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; font-size: 1.15rem; width: auto; transition: color 0.2s; white-space: nowrap; }
         .btn-volver:hover { color: var(--primary); }
-        .logo-mini-nav { display: inline-flex; align-items: center; justify-content: flex-end; width: 140px; margin-right: -30px; }
-        .logo-mini-nav img { max-height: 65px; width: auto; border-radius: 6px; transition: 0.2s ease; }
+        .nav-col-center { display: flex; gap: 12px; align-items: center; justify-content: center; width: 100%; max-width: 750px; flex-grow: 1; min-width: 0; padding: 0 10px; }
+        .header-search-box { position: relative; flex: 1; min-width: 200px; margin: 0; }
+        .header-search-box input { width: 100%; padding: 7px 18px 7px 44px; border-radius: 25px; border: 1.5px solid rgba(227, 35, 34, 0.42); font-size: 0.92rem; font-weight: 500; outline: none; background: #ffffff; color: var(--dark); height: 38px; box-sizing: border-box; box-shadow: 0 3px 12px rgba(227, 35, 34, 0.14), 0 1px 4px rgba(0, 0, 0, 0.05); transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+        .header-search-box input:hover { border-color: var(--primary); box-shadow: 0 4px 16px rgba(227, 35, 34, 0.25), 0 2px 6px rgba(0, 0, 0, 0.08); }
+        .header-search-box input:focus { background: #ffffff; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(227, 35, 34, 0.2), 0 5px 20px rgba(227, 35, 34, 0.28); }
+        .header-search-box i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); font-size: 0.95rem; pointer-events: none; transition: transform 0.2s ease; }
+        .header-search-box:focus-within i { transform: translateY(-50%) scale(1.15); }
+        .orden-box { display: inline-flex; align-items: center; flex-shrink: 0; }
+        .orden-box select { background-color: #ffffff; border: 1.5px solid #dfe6e9; padding: 0 14px; border-radius: 20px; font-size: 0.84rem; color: var(--dark); outline: none; cursor: pointer; font-weight: 600; height: 38px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); transition: all 0.25s ease; }
+        .orden-box select:hover, .orden-box select:focus { border-color: var(--primary); box-shadow: 0 3px 12px rgba(227, 35, 34, 0.18); }
+        .nav-col-right { display: flex; align-items: center; justify-content: flex-end; flex-shrink: 0; min-width: 160px; }
+        .logo-mini-nav { display: inline-flex; align-items: center; justify-content: flex-end; }
+        .logo-mini-nav img { max-height: 48px; width: auto; border-radius: 6px; transition: 0.2s ease; }
         .logo-mini-nav img:hover { transform: scale(1.05); }
-        .catalogo-header h1 { font-size: 1.35rem; color: var(--dark); }
 
-        /* CONTROLES: BUSCADOR Y FILTROS */
-        .filtros-container { max-width: 750px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
-        .search-orden-row { display: flex; align-items: center; gap: 8px; width: 100%; }
-        .search-box { position: relative; flex: 1; }
-        .search-box input { width: 100%; padding: 8px 15px 8px 36px; border-radius: 25px; border: 1px solid #dfe6e9; font-size: 0.85rem; outline: none; transition: 0.3s; }
-        .search-box input:focus { border-color: var(--primary); box-shadow: 0 0 6px rgba(255, 107, 107, 0.2); }
-        .search-box i { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #b2bec3; font-size: 0.8rem; }
-        .orden-box select { background-color: white; border: 1px solid #dfe6e9; padding: 8px 12px; border-radius: 20px; font-size: 0.8rem; color: var(--dark); outline: none; cursor: pointer; font-weight: 500; height: 100%; }
-        .categorias-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
-        .btn-filtro { background-color: #f1f2f6; border: none; padding: 5px 12px; border-radius: 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--dark); transition: 0.2s; }
+        /* FILA INFERIOR: BOTONES DE CATEGORÍAS CENTRADOS */
+        .filtros-container { width: 100%; display: flex; align-items: center; justify-content: center; gap: 10px; margin: 0; padding-top: 2px; }
+        .categorias-bar { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; width: 100%; }
+        .btn-filtro { background-color: #f1f2f6; border: none; padding: 5px 12px; border-radius: 16px; font-size: 0.8rem; font-weight: 600; cursor: pointer; color: var(--dark); transition: 0.2s; white-space: nowrap; }
         .btn-filtro.activo, .btn-filtro:hover { background-color: var(--primary); color: white; }
 
         /* ========================================== */
@@ -116,11 +154,20 @@
 
         /* AJUSTES CELULARES */
         @media (max-width: 768px) {
-            .catalogo-header { padding: 8px 10px !important; }
-            .btn-volver { width: auto !important; font-size: 0.75rem !important; }
-            .logo-mini-nav img { max-height: 58px; border-radius: 8px; border: 1px solid #e1e5ee; box-shadow: 0 3px 8px rgba(0,0,0,0.08); }
-            
-            .mini-promos-section { padding: 0 10px; margin-top: 5px; }
+            .catalogo-header { padding: 8px 10px 6px 10px !important; gap: 6px !important; }
+            .catalogo-nav { flex-wrap: wrap !important; row-gap: 8px !important; }
+            .nav-col-left { order: 1 !important; min-width: auto !important; }
+            .nav-col-right { order: 2 !important; min-width: auto !important; margin-left: auto !important; }
+            .nav-col-center { order: 3 !important; width: 100% !important; padding: 0 !important; display: flex !important; gap: 8px !important; align-items: center !important; justify-content: center !important; }
+            .header-search-box { flex: 1 !important; min-width: 0 !important; max-width: 100% !important; }
+            .header-search-box input { height: 38px !important; font-size: 0.88rem !important; padding: 6px 14px 6px 36px !important; }
+            .header-search-box i { left: 12px !important; font-size: 0.88rem !important; }
+            .orden-box { flex-shrink: 0 !important; }
+            .orden-box select { height: 38px !important; font-size: 0.8rem !important; padding: 0 10px !important; }
+            .btn-volver { width: auto !important; font-size: 1rem !important; }
+            .logo-mini-nav img { max-height: 42px !important; border-radius: 6px; }
+            .filtros-container { display: flex !important; flex-wrap: wrap !important; align-items: center !important; justify-content: center !important; gap: 6px !important; width: 100% !important; }
+            .categorias-bar { display: flex !important; flex-wrap: wrap !important; justify-content: center !important; gap: 5px !important; width: 100% !important; }
             .mini-carousel-viewport { margin: 0 30px; padding: 5px 0; }
             
             /* En celular se muestra 1 sola tarjeta a la vez */
@@ -142,23 +189,35 @@
             .btn-prev { left: 5px !important; }
             .btn-next { right: 5px !important; }
         }
+
+        /* AJUSTES PARA PANTALLAS PEQUEÑAS (hasta 480px) */
+        @media (max-width: 480px) {
+            .nav-col-center { flex-wrap: wrap !important; gap: 8px !important; }
+            .header-search-box { width: 100% !important; flex: none !important; }
+            .orden-box { width: 100% !important; }
+            .orden-box select { width: 100% !important; text-align: center; height: 36px !important; }
+        }
     </style>
 </head>
 <body>
 
     <header class="catalogo-header">
+        <h1 class="visually-hidden" style="position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0,0,0,0); border: 0;">Catálogo General</h1>
+        
+        <!-- FILA SUPERIOR: 3 COLUMNAS FLEXBOX -->
         <div class="catalogo-nav">
-            <a href="index.html" class="btn-volver"><i class="fa-solid fa-arrow-left"></i> Volver al inicio</a>
-            <h1>Catálogo General</h1>
-            <a href="index.html" class="logo-mini-nav">
-                <img src="logochico3.png" alt="Fotografía Vitale">
-            </a>
-        </div>
-        <div class="filtros-container">
-            <div class="search-orden-row">
-                <div class="search-box">
+            <!-- 1. Columna Izquierda: Botón Volver al inicio -->
+            <div class="nav-col-left">
+                <a href="index.html" class="btn-volver" title="Volver a la página principal">
+                    <i class="fa-solid fa-arrow-left"></i> <span>Volver al inicio</span>
+                </a>
+            </div>
+
+            <!-- 2. Columna Centro: Buscador Destacado + Selector de Ordenar -->
+            <div class="nav-col-center">
+                <div class="search-box header-search-box">
                     <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" id="buscador" placeholder="Buscar por nombre, modelo o tipo...">
+                    <input type="text" id="buscador" placeholder="Buscar por nombre, modelo o tipo..." autocomplete="off">
                 </div>
                 <div class="orden-box">
                     <select id="select-orden" onchange="aplicarFiltros()">
@@ -170,6 +229,17 @@
                     </select>
                 </div>
             </div>
+
+            <!-- 3. Columna Derecha: Logo -->
+            <div class="nav-col-right">
+                <a href="index.html" class="logo-mini-nav" title="Volver al inicio">
+                    <img src="logochico3.png" alt="Fotografía Vitale">
+                </a>
+            </div>
+        </div>
+
+        <!-- FILA INFERIOR: BOTONES DE CATEGORÍAS CENTRADOS -->
+        <div class="filtros-container">
             <div class="categorias-bar">
                 <button class="btn-filtro activo" onclick="filtrarCategoria('todos', this)">Todos</button>
                 <button class="btn-filtro" onclick="filtrarCategoria('fotografia', this)">Fotografía</button>
