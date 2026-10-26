@@ -36,7 +36,7 @@ if not SECRET_KEY:
     else:
         raise ImproperlyConfigured("Falta DJANGO_SECRET_KEY en el archivo .env")
 
-ALLOWED_HOSTS = _env_list("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost,testserver")
+ALLOWED_HOSTS = ['fotografiavitale.pythonanywhere.com', 'localhost', '127.0.0.1']
 CSRF_TRUSTED_ORIGINS = _env_list("DJANGO_CSRF_TRUSTED_ORIGINS")
 
 
